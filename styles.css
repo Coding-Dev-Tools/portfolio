@@ -64,11 +64,9 @@ a:hover {
 }
 
 .topbar {
-  position: sticky;
-  top: 0;
+  position: relative;
   z-index: 30;
-  background: rgba(248, 250, 252, 0.92);
-  backdrop-filter: blur(10px);
+  background: var(--surface);
   border-bottom: 1px solid var(--border);
 }
 
@@ -602,6 +600,10 @@ th {
 .mono {
   font-family: var(--font-mono);
   font-size: 0.85rem;
+}
+
+td.mono {
+  white-space: nowrap;
 }
 
 pre {
