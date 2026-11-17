@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="An offline identity-lifecycle dry-run using synthetic HRIS events.">
+  <title>HRIS Identity Lifecycle Simulator</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: Segoe UI, Arial, sans-serif;
+      color: #172033;
+      background: #f3f6fa;
+      line-height: 1.45;
+    }
+    body { margin: 0; }
+    main { max-width: 1120px; margin: 0 auto; padding: 32px 20px 56px; }
+    h1 { margin: 0 0 8px; font-size: clamp(1.7rem, 4vw, 2.3rem); }
+    h2 { margin: 0 0 12px; font-size: 1.2rem; }
+    p { margin: 8px 0 14px; }
+    .lede { max-width: 780px; color: #43506a; }
+    .notice { padding: 14px 16px; border: 1px solid #8ab6e8; border-left: 5px solid #1769aa; border-radius: 8px; background: #eaf4ff; margin: 20px 0; }
+    .notice strong { display: block; margin-bottom: 3px; }
+    .grid { display: grid; grid-template-columns: minmax(300px, 0.9fr) minmax(380px, 1.1fr); gap: 18px; align-items: start; }
+    .panel { background: #fff; border: 1px solid #d9e0eb; border-radius: 10px; padding: 18px; box-shadow: 0 3px 14px #1720330b; min-width: 0; }
+    label { display: block; font-weight: 650; margin: 12px 0 6px; }
+    textarea { box-sizing: border-box; width: 100%; min-height: 238px; resize: vertical; border: 1px solid #99a8bd; border-radius: 6px; padding: 12px; font: 13px/1.5 Consolas, monospace; color: #172033; background: #fbfcfe; }
+    button { min-height: 40px; border: 1px solid #155a9c; border-radius: 6px; padding: 8px 14px; color: #fff; background: #155a9c; font: inherit; font-weight: 650; cursor: pointer; }
+    button.secondary { color: #155a9c; background: #fff; }
+    button:focus-visible, textarea:focus-visible { outline: 3px solid #f2b544; outline-offset: 2px; }
+    .actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+    .muted { color: #56647a; font-size: .92rem; }
+    #status { min-height: 1.5em; margin: 14px 0 8px; font-weight: 650; }
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: .92rem; }
+    th, td { text-align: left; vertical-align: top; padding: 9px 8px; border-bottom: 1px solid #e0e6ef; }
+    th { color: #43506a; font-size: .82rem; }
+    .blocked { color: #a12121; font-weight: 700; }
+    .pending { color: #735200; font-weight: 700; }
+    pre { overflow: auto; max-height: 440px; padding: 14px; border-radius: 7px; color: #eaf1fb; background: #172033; font: 12px/1.55 Consolas, monospace; }
+    details { margin-top: 18px; }
+    summary { cursor: pointer; font-weight: 650; }
+    footer { margin-top: 18px; color: #56647a; font-size: .88rem; }
+    @media (max-width: 760px) { .grid { grid-template-columns: minmax(0, 1fr); } main { padding: 24px 14px 40px; } }
+  </style>
+</head>
+<body>
+  <main>
+    <p><a href="../../index.html?focus=ops" style="font-weight:600;color:#0f766e;text-decoration:none;">&larr; Back to Joshua Williams Portfolio</a></p>
+    <h1>HRIS Identity Lifecycle Simulator</h1>
+    <p class="lede">A small portfolio demo that validates synthetic joiner, mover, and leaver events, suggests items for human review, and shows Microsoft Graph reference notes.</p>
+    <div class="notice" role="note">
+      <strong>Offline simulation only</strong>
+      This page uses fictional sample records. It does not contact Microsoft Graph, create or disable accounts, change group membership, save data, or send data anywhere. It only labels recommendations for human review. Do not paste real employee information here.
+    </div>
+
+    <div class="grid">
+      <section class="panel" aria-labelledby="input-heading">
+        <h2 id="input-heading">Synthetic HRIS event CSV</h2>
+        <p class="muted">Required columns: employee_id, action, display_name, department, manager_email, effective_date, employment_status. Allowed actions: join, move, leave.</p>
+        <label for="csv-input">Edit or paste synthetic rows</label>
+        <textarea id="csv-input" spellcheck="false" aria-describedby="input-help">employee_id,action,display_name,department,manager_email,effective_date,employment_status
+EMP-1001,join,Avery Chen,Finance,mgr-finance@example.test,2026-11-02,active
+EMP-1002,move,Jordan Patel,People Ops,mgr-people@example.test,2026-10-01,active
+EMP-1003,leave,Casey Rivera,Engineering,mgr-eng@example.test,2026-10-13,terminated</textarea>
+        <p id="input-help" class="muted">Supported departments: Finance, People Ops, Engineering. Manager addresses must use the reserved .test domain.</p>
+        <div class="actions">
+          <button id="simulate-button" type="button">Run dry run</button>
+          <button id="reset-button" class="secondary" type="button">Reset sample</button>
+        </div>
+      </section>
+
+      <section class="panel" aria-labelledby="output-heading">
+        <h2 id="output-heading">Review recommendations</h2>
+        <p id="status" aria-live="polite">Ready to simulate the sample rows.</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Employee</th><th>Event</th><th>Review status</th><th>Recommendation</th></tr></thead>
+            <tbody id="results-body"><tr><td colspan="4" class="muted">Run the dry run to see review recommendations.</td></tr></tbody>
+          </table>
+        </div>
+        <details>
+          <summary>Show audit and reference-only Graph preview JSON</summary>
+          <pre id="json-output">{}</pre>
+        </details>
+      </section>
+    </div>
+
+    <footer>Portfolio exercise: fictional data, local browser execution, and no live identity or HRIS integration.</footer>
+  </main>
+  <script src="simulator.js"></script>
+  <script>
+    (() => {
+      const input = document.getElementById("csv-input");
+      const status = document.getElementById("status");
+      const resultsBody = document.getElementById("results-body");
+      const jsonOutput = document.getElementById("json-output");
+      const sample = input.value;
+
+      function addCell(row, value, className) {
+        const cell = document.createElement("td");
+        cell.textContent = value;
+        if (className) cell.className = className;
+        row.appendChild(cell);
+      }
+
+      function render(result) {
+        resultsBody.replaceChildren();
+        for (const event of result.events) {
+          const row = document.createElement("tr");
+          addCell(row, event.employee_id || "-");
+          addCell(row, event.action || "-");
+          const reviewStatus = event.decision === "blocked" ? "Blocked" : "Review recommended";
+          addCell(row, reviewStatus, event.decision === "blocked" ? "blocked" : "pending");
+          addCell(row, event.review_summary || event.errors.join("; "));
+          resultsBody.appendChild(row);
+        }
+        const s = result.summary;
+        status.textContent = `${s.totalRows} row(s): ${s.awaitingReview} flagged for human review, ${s.blocked} blocked. No approvals or changes were performed.`;
+        jsonOutput.textContent = JSON.stringify(result, null, 2);
+      }
+
+      document.getElementById("simulate-button").addEventListener("click", () => {
+        try {
+          render(window.JmlSimulator.simulate(input.value));
+        } catch (error) {
+          resultsBody.replaceChildren();
+          const row = document.createElement("tr");
+          addCell(row, "Input error", "blocked");
+          const cell = document.createElement("td");
+          cell.colSpan = 3;
+          cell.textContent = error.message;
+          row.appendChild(cell);
+          resultsBody.appendChild(row);
+          status.textContent = "Could not simulate this CSV. Correct the input and try again.";
+          jsonOutput.textContent = "{}";
+        }
+      });
+      document.getElementById("reset-button").addEventListener("click", () => {
+        input.value = sample;
+        status.textContent = "Sample restored. Run the dry run to see review recommendations.";
+        resultsBody.replaceChildren();
+        const row = document.createElement("tr");
+        const cell = document.createElement("td");
+        cell.colSpan = 4;
+        cell.className = "muted";
+        cell.textContent = "Run the dry run to see review recommendations.";
+        row.appendChild(cell);
+        resultsBody.appendChild(row);
+        jsonOutput.textContent = "{}";
+      });
+      document.getElementById("simulate-button").click();
+    })();
+  </script>
+</body>
+</html>

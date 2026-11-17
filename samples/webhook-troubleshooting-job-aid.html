@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SaaS Onboarding &amp; Webhook Troubleshooting Guide | Joshua Williams Portfolio</title>
+  <meta name="description" content="Self-service SaaS integration job aid and interactive REST/webhook payload triage simulator for Customer Success and Technical Support enablement.">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="../index.html">
+        <span class="brand-mark" aria-hidden="true">JW</span>
+        <span>Joshua Williams</span>
+      </a>
+      <nav class="nav-links" aria-label="Sample navigation">
+        <a href="../index.html">Portfolio Home</a>
+        <a href="./onboarding-vilt-module.html">L&amp;D ADDIE Module</a>
+        <a href="./escalation-decision-tree.html">Decision Tree</a>
+        <a href="./ai-verification-rubric.html">AI Eval Rubric</a>
+        <a href="./webhook-troubleshooting-job-aid.html" aria-current="page">Webhook Guide</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <a class="breadcrumb" href="../index.html?focus=cs">&larr; Back to Customer Success Portfolio</a>
+
+    <section class="hero">
+      <span class="eyebrow">Customer Enablement &amp; Support Documentation | Self-Service Job Aid</span>
+      <h1>SaaS Integration &amp; Webhook Troubleshooting Playbook</h1>
+      <p class="hero-subtitle">
+        A customer-facing enablement guide built from my experience helping thousands of SaaS users diagnose client-side configuration, API key permission, JSON payload, and webhook delivery issues cleanly before escalating.
+      </p>
+    </section>
+
+    <section class="panel" aria-labelledby="triage-sim-heading">
+      <h2 id="triage-sim-heading">Interactive Payload Triage Scenarios</h2>
+      <p class="section-lead">Select a common SaaS integration failure mode to inspect reproduction evidence, root-cause isolation steps, and customer update phrasing.</p>
+
+      <div class="tab-strip" role="tablist" aria-label="Webhook Failure Modes">
+        <button class="tab-btn" type="button" data-webhook-case="auth_401" aria-selected="true">HTTP 401 Scope Mismatch</button>
+        <button class="tab-btn" type="button" data-webhook-case="schema_400" aria-selected="false">HTTP 400 Date / Schema Error</button>
+        <button class="tab-btn" type="button" data-webhook-case="sig_mismatch" aria-selected="false">Webhook Signature Mismatch</button>
+      </div>
+
+      <h3 id="wh-title" style="color: var(--teal); margin-top: 8px;">Case</h3>
+      <p style="font-weight: 600; margin-bottom: 6px;">Captured Request / Error Evidence (Sanitized Sample)</p>
+      <pre id="wh-payload"></pre>
+
+      <p style="font-weight: 600; margin: 16px 0 6px;">Step-by-Step Self-Service Resolution</p>
+      <pre id="wh-diagnosis"></pre>
+
+      <div id="wh-comms" class="callout callout-teal" style="margin-top: 16px;"></div>
+    </section>
+
+    <footer class="footer">
+      <span><a href="../index.html">&larr; Back to Joshua Williams Portfolio</a></span>
+      <span><a href="../demos/hris-identity/index.html">Next Sample: HRIS Lifecycle Simulator &rarr;</a></span>
+    </footer>
+  </main>
+
+  <script src="./samples.js"></script>
+</body>
+</html>

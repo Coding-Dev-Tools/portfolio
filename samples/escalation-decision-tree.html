@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Escalation Triage Decision Tree Job Aid | Joshua Williams Portfolio</title>
+  <meta name="description" content="Interactive visual job aid and escalation decision tree for clinical/partner warm handoffs, data verification, and SOP improvement loops.">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="../index.html">
+        <span class="brand-mark" aria-hidden="true">JW</span>
+        <span>Joshua Williams</span>
+      </a>
+      <nav class="nav-links" aria-label="Sample navigation">
+        <a href="../index.html">Portfolio Home</a>
+        <a href="./onboarding-vilt-module.html">L&amp;D ADDIE Module</a>
+        <a href="./escalation-decision-tree.html" aria-current="page">Decision Tree</a>
+        <a href="./ai-verification-rubric.html">AI Eval Rubric</a>
+        <a href="./webhook-troubleshooting-job-aid.html">Webhook Guide</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <a class="breadcrumb" href="../index.html?focus=ops">&larr; Back to Operations &amp; Enablement Portfolio</a>
+
+    <section class="hero">
+      <span class="eyebrow">Operations &amp; Enablement Job Aid | Interactive Decision Tree</span>
+      <h1>High-Stakes Escalation Triage &amp; Warm-Handoff Decision Tree</h1>
+      <p class="hero-subtitle">
+        Designed so remote frontline specialists never have to guess when to self-resolve, when to escalate urgently, what context must be verified first, and when a recurring issue triggers an SOP or training update.
+      </p>
+    </section>
+
+    <section class="panel" aria-labelledby="visual-flow-heading">
+      <h2 id="visual-flow-heading">1. End-to-End Escalation Flow Overview</h2>
+      <svg viewBox="0 0 920 150" role="img" aria-label="Four stage escalation flowchart: Classify Severity, Audit Source Records, Confirm Warm Handoff, Update SOP" style="width: 100%; height: auto; margin-top: 12px;">
+        <rect x="10" y="20" width="200" height="95" rx="10" fill="#f0fdfa" stroke="#0f766e" stroke-width="2"></rect>
+        <text x="110" y="55" text-anchor="middle" font-size="14" font-weight="700" fill="#0f172a">1. Classify &amp; Triage</text>
+        <text x="110" y="78" text-anchor="middle" font-size="12" fill="#334155">Separate urgent handoff</text>
+        <text x="110" y="95" text-anchor="middle" font-size="12" fill="#334155">vs. data/config gap</text>
+
+        <line x1="210" y1="68" x2="245" y2="68" stroke="#64748b" stroke-width="2"></line>
+        <polygon points="245,62 257,68 245,74" fill="#64748b"></polygon>
+
+        <rect x="257" y="20" width="200" height="95" rx="10" fill="#eff6ff" stroke="#1d4ed8" stroke-width="2"></rect>
+        <text x="357" y="55" text-anchor="middle" font-size="14" font-weight="700" fill="#0f172a">2. Audit Source Data</text>
+        <text x="357" y="78" text-anchor="middle" font-size="12" fill="#334155">Verify CRM, billing &amp;</text>
+        <text x="357" y="95" text-anchor="middle" font-size="12" fill="#334155">timestamps before routing</text>
+
+        <line x1="457" y1="68" x2="492" y2="68" stroke="#64748b" stroke-width="2"></line>
+        <polygon points="492,62 504,68 492,74" fill="#64748b"></polygon>
+
+        <rect x="504" y="20" width="200" height="95" rx="10" fill="#f0fdf4" stroke="#15803d" stroke-width="2"></rect>
+        <text x="604" y="55" text-anchor="middle" font-size="14" font-weight="700" fill="#0f172a">3. Warm Handoff</text>
+        <text x="604" y="78" text-anchor="middle" font-size="12" fill="#334155">Confirm live owner &amp;</text>
+        <text x="604" y="95" text-anchor="middle" font-size="12" fill="#334155">notify waiting stakeholder</text>
+
+        <line x1="704" y1="68" x2="739" y2="68" stroke="#64748b" stroke-width="2"></line>
+        <polygon points="739,62 751,68 739,74" fill="#64748b"></polygon>
+
+        <rect x="751" y="20" width="160" height="95" rx="10" fill="#fffbeb" stroke="#b45309" stroke-width="2"></rect>
+        <text x="831" y="55" text-anchor="middle" font-size="14" font-weight="700" fill="#0f172a">4. Close &amp; Prevent</text>
+        <text x="831" y="78" text-anchor="middle" font-size="12" fill="#334155">Update SOP / Scribe</text>
+        <text x="831" y="95" text-anchor="middle" font-size="12" fill="#334155">if repeat pattern</text>
+      </svg>
+    </section>
+
+    <section class="panel" id="decision-tree-app" aria-labelledby="walker-heading">
+      <div class="section-header">
+        <div>
+          <h2 id="walker-heading">2. Interactive Triage Simulator</h2>
+          <p class="section-lead">Step through a scenario to see how the job aid builds an audit-ready handoff record.</p>
+        </div>
+        <button id="tree-reset" class="btn btn-secondary" type="button">Restart Tree</button>
+      </div>
+
+      <h3 id="tree-step" style="color: var(--teal); margin-bottom: 6px;">Step 1</h3>
+      <p id="tree-prompt" style="font-weight: 600;"></p>
+      <div id="tree-choices"></div>
+
+      <h3 style="margin-top: 22px;">Generated Audit-Ready Handoff Note</h3>
+      <pre id="tree-summary">Select a triage path above to construct a verified handoff summary.</pre>
+    </section>
+
+    <footer class="footer">
+      <span><a href="../index.html">&larr; Back to Joshua Williams Portfolio</a></span>
+      <span><a href="./webhook-troubleshooting-job-aid.html">Next Sample: SaaS Webhook Job Aid &rarr;</a></span>
+    </footer>
+  </main>
+
+  <script src="./samples.js"></script>
+</body>
+</html>
