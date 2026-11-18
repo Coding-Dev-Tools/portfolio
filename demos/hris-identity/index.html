@@ -1,94 +1,103 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="An offline identity-lifecycle dry-run using synthetic HRIS events.">
-  <title>HRIS Identity Lifecycle Simulator</title>
-  <style>
-    :root {
-      color-scheme: light;
-      font-family: Segoe UI, Arial, sans-serif;
-      color: #172033;
-      background: #f3f6fa;
-      line-height: 1.45;
-    }
-    body { margin: 0; }
-    main { max-width: 1120px; margin: 0 auto; padding: 32px 20px 56px; }
-    h1 { margin: 0 0 8px; font-size: clamp(1.7rem, 4vw, 2.3rem); }
-    h2 { margin: 0 0 12px; font-size: 1.2rem; }
-    p { margin: 8px 0 14px; }
-    .lede { max-width: 780px; color: #43506a; }
-    .notice { padding: 14px 16px; border: 1px solid #8ab6e8; border-left: 5px solid #1769aa; border-radius: 8px; background: #eaf4ff; margin: 20px 0; }
-    .notice strong { display: block; margin-bottom: 3px; }
-    .grid { display: grid; grid-template-columns: minmax(300px, 0.9fr) minmax(380px, 1.1fr); gap: 18px; align-items: start; }
-    .panel { background: #fff; border: 1px solid #d9e0eb; border-radius: 10px; padding: 18px; box-shadow: 0 3px 14px #1720330b; min-width: 0; }
-    label { display: block; font-weight: 650; margin: 12px 0 6px; }
-    textarea { box-sizing: border-box; width: 100%; min-height: 238px; resize: vertical; border: 1px solid #99a8bd; border-radius: 6px; padding: 12px; font: 13px/1.5 Consolas, monospace; color: #172033; background: #fbfcfe; }
-    button { min-height: 40px; border: 1px solid #155a9c; border-radius: 6px; padding: 8px 14px; color: #fff; background: #155a9c; font: inherit; font-weight: 650; cursor: pointer; }
-    button.secondary { color: #155a9c; background: #fff; }
-    button:focus-visible, textarea:focus-visible { outline: 3px solid #f2b544; outline-offset: 2px; }
-    .actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
-    .muted { color: #56647a; font-size: .92rem; }
-    #status { min-height: 1.5em; margin: 14px 0 8px; font-weight: 650; }
-    .table-wrap { overflow-x: auto; }
-    table { width: 100%; border-collapse: collapse; font-size: .92rem; }
-    th, td { text-align: left; vertical-align: top; padding: 9px 8px; border-bottom: 1px solid #e0e6ef; }
-    th { color: #43506a; font-size: .82rem; }
-    .blocked { color: #a12121; font-weight: 700; }
-    .pending { color: #735200; font-weight: 700; }
-    pre { overflow: auto; max-height: 440px; padding: 14px; border-radius: 7px; color: #eaf1fb; background: #172033; font: 12px/1.55 Consolas, monospace; }
-    details { margin-top: 18px; }
-    summary { cursor: pointer; font-weight: 650; }
-    footer { margin-top: 18px; color: #56647a; font-size: .88rem; }
-    @media (max-width: 760px) { .grid { grid-template-columns: minmax(0, 1fr); } main { padding: 24px 14px 40px; } }
-  </style>
+  <title>HRIS Identity Lifecycle Simulator | Joshua Williams Portfolio</title>
+  <meta name="description" content="Offline Human Resources Information System (HRIS) identity-lifecycle dry-run simulator validating synthetic join, move, and leave CSV rows against access-review rules.">
+  <link rel="canonical" href="https://coding-dev-tools.github.io/portfolio/demos/hris-identity/index.html">
+  <link rel="icon" type="image/svg+xml" href="../../favicon.svg">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Joshua Williams Portfolio">
+  <meta property="og:title" content="HRIS Identity Lifecycle Simulator | Joshua Williams Portfolio">
+  <meta property="og:description" content="Offline identity-lifecycle validator processing synthetic joiner, mover, and leaver events for human review.">
+  <meta property="og:url" content="https://coding-dev-tools.github.io/portfolio/demos/hris-identity/index.html">
+  <meta name="twitter:card" content="summary">
+  <link rel="stylesheet" href="../../styles.css">
 </head>
 <body>
-  <main>
-    <p><a href="../../index.html?focus=ops" style="font-weight:600;color:#0f766e;text-decoration:none;">&larr; Back to Joshua Williams Portfolio</a></p>
-    <h1>HRIS Identity Lifecycle Simulator</h1>
-    <p class="lede">A small portfolio demo that validates synthetic joiner, mover, and leaver events, suggests items for human review, and shows Microsoft Graph reference notes.</p>
-    <div class="notice" role="note">
-      <strong>Offline simulation only</strong>
-      This page uses fictional sample records. It does not contact Microsoft Graph, create or disable accounts, change group membership, save data, or send data anywhere. It only labels recommendations for human review. Do not paste real employee information here.
-    </div>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
 
-    <div class="grid">
-      <section class="panel" aria-labelledby="input-heading">
-        <h2 id="input-heading">Synthetic HRIS event CSV</h2>
-        <p class="muted">Required columns: employee_id, action, display_name, department, manager_email, effective_date, employment_status. Allowed actions: join, move, leave.</p>
-        <label for="csv-input">Edit or paste synthetic rows</label>
-        <textarea id="csv-input" spellcheck="false" aria-describedby="input-help">employee_id,action,display_name,department,manager_email,effective_date,employment_status
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="../../index.html">
+        <span class="brand-mark" aria-hidden="true">JW</span>
+        <span>Joshua Williams</span>
+      </a>
+      <nav class="nav-links" aria-label="Sample navigation">
+        <a href="../../index.html">Portfolio Home</a>
+        <a href="../../samples/onboarding-vilt-module.html">L&amp;D ADDIE Module</a>
+        <a href="../../samples/escalation-decision-tree.html">Decision Tree</a>
+        <a href="../../samples/ai-verification-rubric.html">AI Eval Rubric</a>
+        <a href="../../samples/webhook-troubleshooting-job-aid.html">Webhook Guide</a>
+        <a href="./index.html" aria-current="page">HRIS Simulator</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container" id="main-content" tabindex="-1">
+    <a class="breadcrumb" href="../../index.html?focus=ops">&larr; Back to Operations &amp; QA Portfolio</a>
+
+    <section class="hero" aria-labelledby="hris-hero-title">
+      <span class="eyebrow">Operations Validation Demo | Synthetic Client-Side Exercise</span>
+      <h1 id="hris-hero-title">HRIS Identity Lifecycle Simulator</h1>
+      <p class="hero-subtitle">
+        A self-contained Human Resources Information System (HRIS) validator checking synthetic joiner, mover, and leaver CSV events against schema rules, suggesting baseline groups for human review, and displaying read-only API reference shapes.
+      </p>
+      <div class="callout" role="note">
+        <strong>Offline learning exercise only:</strong> This browser demo processes fictional <code>.test</code> sample rows locally. It is not a production identity system, executes zero live Microsoft Graph or Entra requests, saves no data, and is presented solely as a testable validation exercise.
+      </div>
+    </section>
+
+    <div class="hris-grid mt-md">
+      <section class="panel mt-0" aria-labelledby="input-heading">
+        <h2 id="input-heading">Synthetic HRIS Event CSV</h2>
+        <p class="meta-note">Required columns: <code>employee_id</code>, <code>action</code>, <code>display_name</code>, <code>department</code>, <code>manager_email</code>, <code>effective_date</code>, <code>employment_status</code>.</p>
+        <label class="fw-600 mt-sm" style="display:block;" for="csv-input">Edit or paste synthetic rows</label>
+        <textarea id="csv-input" class="hris-textarea mt-sm" spellcheck="false" aria-describedby="input-help">employee_id,action,display_name,department,manager_email,effective_date,employment_status
 EMP-1001,join,Avery Chen,Finance,mgr-finance@example.test,2026-11-02,active
 EMP-1002,move,Jordan Patel,People Ops,mgr-people@example.test,2026-10-01,active
 EMP-1003,leave,Casey Rivera,Engineering,mgr-eng@example.test,2026-10-13,terminated</textarea>
-        <p id="input-help" class="muted">Supported departments: Finance, People Ops, Engineering. Manager addresses must use the reserved .test domain.</p>
-        <div class="actions">
-          <button id="simulate-button" type="button">Run dry run</button>
-          <button id="reset-button" class="secondary" type="button">Reset sample</button>
+        <p id="input-help" class="meta-note mt-sm">Supported departments: Finance, People Ops, Engineering. Manager addresses must use the reserved <code>@example.test</code> domain.</p>
+        <div class="hero-actions actions">
+          <button id="simulate-button" class="btn" type="button">Run dry run</button>
+          <button id="reset-button" class="btn btn-secondary" type="button">Reset sample</button>
         </div>
       </section>
 
-      <section class="panel" aria-labelledby="output-heading">
-        <h2 id="output-heading">Review recommendations</h2>
-        <p id="status" aria-live="polite">Ready to simulate the sample rows.</p>
-        <div class="table-wrap">
+      <section class="panel mt-0" aria-labelledby="output-heading">
+        <h2 id="output-heading">Review Recommendations</h2>
+        <p id="status" class="fw-600 mt-sm" aria-live="polite">Ready to simulate the sample rows.</p>
+        <div class="table-wrap mt-sm" tabindex="0" role="region" aria-label="Synthetic HRIS validation recommendations">
           <table>
-            <thead><tr><th>Employee</th><th>Event</th><th>Review status</th><th>Recommendation</th></tr></thead>
-            <tbody id="results-body"><tr><td colspan="4" class="muted">Run the dry run to see review recommendations.</td></tr></tbody>
+            <caption>Human-review recommendations generated client-side with zero external side effects.</caption>
+            <thead>
+              <tr>
+                <th scope="col">Employee</th>
+                <th scope="col">Event</th>
+                <th scope="col">Review status</th>
+                <th scope="col">Recommendation</th>
+              </tr>
+            </thead>
+            <tbody id="results-body">
+              <tr><td colspan="4" class="meta-note">Run the dry run to see review recommendations.</td></tr>
+            </tbody>
           </table>
         </div>
-        <details>
-          <summary>Show audit and reference-only Graph preview JSON</summary>
-          <pre id="json-output">{}</pre>
+        <details class="mt-md">
+          <summary class="fw-600">Show audit and reference-only API preview JSON</summary>
+          <pre id="json-output" class="mt-sm">{}</pre>
         </details>
       </section>
     </div>
-
-    <footer>Portfolio exercise: fictional data, local browser execution, and no live identity or HRIS integration.</footer>
   </main>
-  <script src="simulator.js"></script>
+
+  <footer class="footer">
+    <span><a href="../../samples/webhook-troubleshooting-job-aid.html">&larr; Previous: Webhook Guide</a></span>
+    <span><a href="../../index.html">Return to Portfolio Home &rarr;</a></span>
+  </footer>
+
+  <script src="./simulator.js"></script>
   <script>
     (() => {
       const input = document.getElementById("csv-input");
@@ -136,6 +145,7 @@ EMP-1003,leave,Casey Rivera,Engineering,mgr-eng@example.test,2026-10-13,terminat
           jsonOutput.textContent = "{}";
         }
       });
+
       document.getElementById("reset-button").addEventListener("click", () => {
         input.value = sample;
         status.textContent = "Sample restored. Run the dry run to see review recommendations.";
@@ -143,12 +153,13 @@ EMP-1003,leave,Casey Rivera,Engineering,mgr-eng@example.test,2026-10-13,terminat
         const row = document.createElement("tr");
         const cell = document.createElement("td");
         cell.colSpan = 4;
-        cell.className = "muted";
+        cell.className = "meta-note";
         cell.textContent = "Run the dry run to see review recommendations.";
         row.appendChild(cell);
         resultsBody.appendChild(row);
         jsonOutput.textContent = "{}";
       });
+
       document.getElementById("simulate-button").click();
     })();
   </script>

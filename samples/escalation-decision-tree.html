@@ -3,11 +3,21 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Escalation Triage Decision Tree Job Aid | Joshua Williams Portfolio</title>
-  <meta name="description" content="Interactive visual job aid and escalation decision tree for clinical/partner warm handoffs, data verification, and SOP improvement loops.">
+  <title>Escalation Triage Decision Tree | Joshua Williams Portfolio</title>
+  <meta name="description" content="Interactive 4-step branching job aid and escalation decision tree for source-record verification, confirmed warm handoffs, and SOP improvement loops.">
+  <link rel="canonical" href="https://coding-dev-tools.github.io/portfolio/samples/escalation-decision-tree.html">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Joshua Williams Portfolio">
+  <meta property="og:title" content="Escalation Triage Decision Tree | Joshua Williams Portfolio">
+  <meta property="og:description" content="Interactive 4-step branching triage workflow generating audit-ready escalation handoff notes.">
+  <meta property="og:url" content="https://coding-dev-tools.github.io/portfolio/samples/escalation-decision-tree.html">
+  <meta name="twitter:card" content="summary">
   <link rel="stylesheet" href="../styles.css">
 </head>
 <body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+
   <header class="topbar">
     <div class="topbar-inner">
       <a class="brand" href="../index.html">
@@ -20,77 +30,88 @@
         <a href="./escalation-decision-tree.html" aria-current="page">Decision Tree</a>
         <a href="./ai-verification-rubric.html">AI Eval Rubric</a>
         <a href="./webhook-troubleshooting-job-aid.html">Webhook Guide</a>
+        <a href="../demos/hris-identity/index.html">HRIS Simulator</a>
       </nav>
     </div>
   </header>
 
-  <main class="container">
-    <a class="breadcrumb" href="../index.html?focus=ops">&larr; Back to Operations &amp; Enablement Portfolio</a>
+  <main class="container" id="main-content" tabindex="-1">
+    <a class="breadcrumb" href="../index.html?focus=ops">&larr; Back to Operations &amp; Escalations Portfolio</a>
 
-    <section class="hero">
-      <span class="eyebrow">Operations &amp; Enablement Job Aid | Interactive Decision Tree</span>
-      <h1>High-Stakes Escalation Triage &amp; Warm-Handoff Decision Tree</h1>
+    <section class="hero" aria-labelledby="tree-hero-title">
+      <span class="eyebrow">Operations &amp; Enablement Job Aid | Branching Decision Tree</span>
+      <h1 id="tree-hero-title">High-Stakes Escalation Triage &amp; Warm-Handoff Decision Tree</h1>
       <p class="hero-subtitle">
-        Designed so remote frontline specialists never have to guess when to self-resolve, when to escalate urgently, what context must be verified first, and when a recurring issue triggers an SOP or training update.
+        Structured so distributed specialists never guess when to resolve at intake, when to escalate urgently, what primary facts must be verified first, and when recurring breaks trigger an SOP (standard operating procedure) or training update.
       </p>
     </section>
 
     <section class="panel" aria-labelledby="visual-flow-heading">
-      <h2 id="visual-flow-heading">1. End-to-End Escalation Flow Overview</h2>
-      <svg viewBox="0 0 920 150" role="img" aria-label="Four stage escalation flowchart: Classify Severity, Audit Source Records, Confirm Warm Handoff, Update SOP" style="width: 100%; height: auto; margin-top: 12px;">
-        <rect x="10" y="20" width="200" height="95" rx="10" fill="#f0fdfa" stroke="#0f766e" stroke-width="2"></rect>
-        <text x="110" y="55" text-anchor="middle" font-size="14" font-weight="700" fill="#0f172a">1. Classify &amp; Triage</text>
-        <text x="110" y="78" text-anchor="middle" font-size="12" fill="#334155">Separate urgent handoff</text>
-        <text x="110" y="95" text-anchor="middle" font-size="12" fill="#334155">vs. data/config gap</text>
+      <h2 id="visual-flow-heading">1. Responsive Three-Track Triage Branches</h2>
+      <p class="section-lead">Every incoming escalation branches cleanly into one of three standardized 4-step resolution tracks.</p>
 
-        <line x1="210" y1="68" x2="245" y2="68" stroke="#64748b" stroke-width="2"></line>
-        <polygon points="245,62 257,68 245,74" fill="#64748b"></polygon>
+      <div class="flow-tracks">
+        <div class="flow-card">
+          <h3>Track A: Record Mismatch</h3>
+          <ol class="flow-steps">
+            <li>Classify conflicting CRM/billing intake</li>
+            <li>Audit source dates or sync payload</li>
+            <li>Correct record or build Engineering repro</li>
+            <li>Save standardized QA closure summary</li>
+          </ol>
+        </div>
 
-        <rect x="257" y="20" width="200" height="95" rx="10" fill="#eff6ff" stroke="#1d4ed8" stroke-width="2"></rect>
-        <text x="357" y="55" text-anchor="middle" font-size="14" font-weight="700" fill="#0f172a">2. Audit Source Data</text>
-        <text x="357" y="78" text-anchor="middle" font-size="12" fill="#334155">Verify CRM, billing &amp;</text>
-        <text x="357" y="95" text-anchor="middle" font-size="12" fill="#334155">timestamps before routing</text>
+        <div class="flow-card">
+          <h3>Track B: Urgent Stalled Handoff</h3>
+          <ol class="flow-steps">
+            <li>Flag unconfirmed receiving owner</li>
+            <li>Contact primary or backup lead live</li>
+            <li>Log owner acceptance + partner update</li>
+            <li>Save standardized QA closure summary</li>
+          </ol>
+        </div>
 
-        <line x1="457" y1="68" x2="492" y2="68" stroke="#64748b" stroke-width="2"></line>
-        <polygon points="492,62 504,68 492,74" fill="#64748b"></polygon>
-
-        <rect x="504" y="20" width="200" height="95" rx="10" fill="#f0fdf4" stroke="#15803d" stroke-width="2"></rect>
-        <text x="604" y="55" text-anchor="middle" font-size="14" font-weight="700" fill="#0f172a">3. Warm Handoff</text>
-        <text x="604" y="78" text-anchor="middle" font-size="12" fill="#334155">Confirm live owner &amp;</text>
-        <text x="604" y="95" text-anchor="middle" font-size="12" fill="#334155">notify waiting stakeholder</text>
-
-        <line x1="704" y1="68" x2="739" y2="68" stroke="#64748b" stroke-width="2"></line>
-        <polygon points="739,62 751,68 739,74" fill="#64748b"></polygon>
-
-        <rect x="751" y="20" width="160" height="95" rx="10" fill="#fffbeb" stroke="#b45309" stroke-width="2"></rect>
-        <text x="831" y="55" text-anchor="middle" font-size="14" font-weight="700" fill="#0f172a">4. Close &amp; Prevent</text>
-        <text x="831" y="78" text-anchor="middle" font-size="12" fill="#334155">Update SOP / Scribe</text>
-        <text x="831" y="95" text-anchor="middle" font-size="12" fill="#334155">if repeat pattern</text>
-      </svg>
+        <div class="flow-card">
+          <h3>Track C: Repeat Pattern Prevention</h3>
+          <ol class="flow-steps">
+            <li>Identify 3+ similar specialist errors</li>
+            <li>Isolate doc gap vs. form validation flaw</li>
+            <li>Ship 1-page visual aid or Product bug</li>
+            <li>Spot-check adoption &amp; archive note</li>
+          </ol>
+        </div>
+      </div>
     </section>
 
     <section class="panel" id="decision-tree-app" aria-labelledby="walker-heading">
       <div class="section-header">
         <div>
-          <h2 id="walker-heading">2. Interactive Triage Simulator</h2>
-          <p class="section-lead">Step through a scenario to see how the job aid builds an audit-ready handoff record.</p>
+          <h2 id="walker-heading">2. Interactive 4-Step Triage Simulator</h2>
+          <p class="section-lead">Walk through any track to construct an audit-ready handoff note.</p>
         </div>
-        <button id="tree-reset" class="btn btn-secondary" type="button">Restart Tree</button>
+        <div class="hero-actions mt-0">
+          <button id="tree-back" class="btn btn-secondary" type="button" disabled>Back One Step</button>
+          <button id="tree-reset" class="btn btn-secondary" type="button">Restart Tree</button>
+        </div>
       </div>
 
-      <h3 id="tree-step" style="color: var(--teal); margin-bottom: 6px;">Step 1</h3>
-      <p id="tree-prompt" style="font-weight: 600;"></p>
+      <h3 id="tree-step" class="text-teal mt-md" tabindex="-1" aria-live="polite">Step 1 of 4</h3>
+      <p id="tree-prompt" class="fw-600" aria-live="polite"></p>
       <div id="tree-choices"></div>
 
-      <h3 style="margin-top: 22px;">Generated Audit-Ready Handoff Note</h3>
-      <pre id="tree-summary">Select a triage path above to construct a verified handoff summary.</pre>
+      <div class="section-header mt-md">
+        <h3>Generated Audit-Ready Handoff Note</h3>
+        <button id="tree-copy" class="btn btn-secondary" type="button">Copy Handoff Note</button>
+      </div>
+      <pre id="tree-summary" aria-live="polite">Select a triage path above to construct a verified handoff summary.</pre>
+      <p id="tree-copy-status" class="meta-note mt-sm" aria-live="polite"></p>
     </section>
-
-    <footer class="footer">
-      <span><a href="../index.html">&larr; Back to Joshua Williams Portfolio</a></span>
-      <span><a href="./webhook-troubleshooting-job-aid.html">Next Sample: SaaS Webhook Job Aid &rarr;</a></span>
-    </footer>
   </main>
+
+  <footer class="footer">
+    <span><a href="./onboarding-vilt-module.html">&larr; Previous: L&amp;D ADDIE Module</a></span>
+    <span><a href="./ai-verification-rubric.html">Next Sample: AI Eval Rubric &rarr;</a></span>
+  </footer>
 
   <script src="./samples.js"></script>
 </body>

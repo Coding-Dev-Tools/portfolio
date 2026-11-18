@@ -4,10 +4,43 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Joshua Williams | Operations, Enablement &amp; AI Workflow Portfolio</title>
-  <meta name="description" content="Public portfolio of Joshua Williams: interactive learning design (ADDIE/vILT), operations SOP decision trees, AI verification rubrics, live web platforms, and customer enablement work samples.">
+  <meta name="description" content="Public portfolio of Joshua Williams: interactive learning design (ADDIE and live virtual training), escalation decision trees, AI verification checklists, SaaS troubleshooting guides, and live production web platforms.">
+  <link rel="canonical" href="https://coding-dev-tools.github.io/portfolio/">
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Joshua Williams Portfolio">
+  <meta property="og:title" content="Joshua Williams | Operations, Enablement &amp; AI Workflow Portfolio">
+  <meta property="og:description" content="Interactive work samples in remote training design, high-stakes escalation workflows, AI output verification, and SaaS user enablement.">
+  <meta property="og:url" content="https://coding-dev-tools.github.io/portfolio/">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Joshua Williams | Operations, Enablement &amp; AI Workflow Portfolio">
+  <meta name="twitter:description" content="Interactive learning design, SOP decision trees, AI output checks, and live web platforms by Joshua Williams.">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Joshua Williams",
+    "url": "https://coding-dev-tools.github.io/portfolio/",
+    "email": "mailto:joshuawilliamsky@yahoo.com",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Richmond",
+      "addressRegion": "KY",
+      "addressCountry": "US"
+    },
+    "sameAs": [
+      "https://www.linkedin.com/in/josh-williams-094338120",
+      "https://github.com/Coding-Dev-Tools",
+      "https://engraphis.com",
+      "https://snippetmanagerpro.com"
+    ]
+  }
+  </script>
   <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+
   <header class="topbar">
     <div class="topbar-inner">
       <a class="brand" href="./index.html">
@@ -18,42 +51,54 @@
         <a href="#work-samples">Work Samples</a>
         <a href="#platforms">Live Platforms</a>
         <a href="#experience">Experience</a>
-        <a href="#credentials">Credentials</a>
+        <a href="#credentials">Credentials &amp; Tools</a>
       </nav>
     </div>
   </header>
 
-  <main class="container">
+  <main class="container" id="main-content" tabindex="-1">
     <section class="hero" aria-labelledby="hero-title">
-      <span class="eyebrow">Richmond, KY (US-Remote, Eastern Time) | Operations, Enablement &amp; Customer Success</span>
-      <h1 id="hero-title">Operations, Learning Design &amp; AI Workflow Portfolio</h1>
+      <span class="eyebrow">Richmond, KY | Operations Supervision, SaaS Enablement &amp; Learning Design</span>
+      <h1 id="hero-title">Operations, Enablement &amp; AI Workflow Portfolio</h1>
       <p class="hero-subtitle">
-        13+ years spanning regulated healthcare operations, customer adoption, SOP design, and live web platform delivery.
-        Below are interactive, non-proprietary work samples in instructional design (ADDIE and vILT facilitation), escalation triage decision trees, AI output verification, and self-service SaaS troubleshooting, alongside the three live platforms I operate.
+        Practical work samples in onboarding curriculum design, high-stakes escalation playbooks, AI output verification, and SaaS troubleshooting, alongside the three live web platforms I operate.
       </p>
-      <div class="hero-actions">
-        <a class="btn" href="#work-samples">Explore Interactive Work Samples</a>
-        <a class="btn btn-secondary" href="mailto:joshuawilliamsky@yahoo.com">Email: joshuawilliamsky@yahoo.com</a>
-        <a class="btn btn-secondary" href="https://www.linkedin.com/in/josh-williams-094338120" target="_blank" rel="noopener">LinkedIn Profile</a>
-        <a class="btn btn-secondary" href="https://github.com/Coding-Dev-Tools" target="_blank" rel="noopener">GitHub (Coding-Dev-Tools)</a>
+
+      <div class="availability-bar" aria-label="Work authorization and availability">
+        <span class="avail-pill">US Citizen</span>
+        <span class="avail-pill">Authorized to work (no sponsorship)</span>
+        <span class="avail-pill">Remote US (Eastern Time) / On-site in KY</span>
+        <span class="avail-pill">Available immediately</span>
       </div>
 
-      <div class="scope-grid" aria-label="Verified operational scope">
+      <div class="hero-actions">
+        <a class="btn" href="#work-samples">Explore Interactive Work Samples</a>
+        <a class="btn btn-secondary" href="mailto:joshuawilliamsky@yahoo.com">Email Me</a>
+        <button class="btn btn-secondary" type="button" id="copy-email-btn" data-copy-email="joshuawilliamsky@yahoo.com">Copy Email Address</button>
+        <button class="btn btn-secondary" type="button" id="print-summary-btn">Print / Save PDF Summary</button>
+        <a class="btn btn-secondary" href="https://www.linkedin.com/in/josh-williams-094338120" target="_blank" rel="noopener">LinkedIn</a>
+        <a class="btn btn-secondary" href="https://github.com/Coding-Dev-Tools" target="_blank" rel="noopener">GitHub</a>
+      </div>
+      <p id="action-status" class="meta-note mt-sm" aria-live="polite"></p>
+
+      <div id="focus-callout" class="callout callout-teal" hidden aria-live="polite"></div>
+
+      <div class="scope-grid" aria-label="Career scope overview">
         <div class="scope-card">
-          <div class="scope-value">13+ Years</div>
-          <div class="scope-label">Healthcare operations, SaaS enablement &amp; client documentation</div>
-        </div>
-        <div class="scope-card">
-          <div class="scope-value">900+ Sites / 80 Staff</div>
-          <div class="scope-label">Remote clinical facility coordination &amp; specialist SOP scope at Carenet Health</div>
-        </div>
-        <div class="scope-card">
-          <div class="scope-value">3 Live Platforms</div>
-          <div class="scope-label">Operating engraphis.com, snippetmanagerpro.com &amp; vpnsecurity.blog across 65 repositories</div>
+          <div class="scope-value">Up to 80 Specialists</div>
+          <div class="scope-label">900+ clinical facilities &amp; 200+ after-hours CenterWell sites supported at Carenet Health (2022 - 2025)</div>
         </div>
         <div class="scope-card">
           <div class="scope-value">11,800+ Members</div>
-          <div class="scope-label">Independent HaasOnline SaaS partner user enablement ecosystem (2018 to 2022)</div>
+          <div class="scope-label">Independent HaasOnline SaaS partner onboarding, API/webhook help &amp; guides (2018 - 2022)</div>
+        </div>
+        <div class="scope-card">
+          <div class="scope-value">6 Years Care &amp; Billing</div>
+          <div class="scope-label">Direct support, physician/therapist coordination &amp; Medicaid documentation (2012 - 2018)</div>
+        </div>
+        <div class="scope-card">
+          <div class="scope-value">3 Live Websites</div>
+          <div class="scope-label">Operating engraphis.com, snippetmanagerpro.com &amp; vpnsecurity.blog (65 org GitHub repos)</div>
         </div>
       </div>
     </section>
@@ -63,34 +108,34 @@
         <div>
           <h2 id="samples-heading">Interactive Work Samples &amp; Job Aids</h2>
           <p class="section-lead">
-            Recruiter-reviewable interactive artifacts authored around public platforms and non-proprietary operational standards. All internal Carenet Health client and patient records remain strictly confidential.
+            Original, interactive samples built around public documentation and standard operational workflows. Internal client, patient, and proprietary Carenet Health materials remain strictly confidential.
           </p>
         </div>
       </div>
 
       <div class="filter-bar" role="group" aria-label="Filter work samples by role focus">
         <button class="filter-pill" type="button" data-filter="all" aria-pressed="true">All Work (6)</button>
-        <button class="filter-pill" type="button" data-filter="lnd" aria-pressed="false">Learning &amp; Enablement (L&amp;D)</button>
-        <button class="filter-pill" type="button" data-filter="ops" aria-pressed="false">Operations &amp; Escalations</button>
-        <button class="filter-pill" type="button" data-filter="cs" aria-pressed="false">Customer Success &amp; Onboarding</button>
-        <button class="filter-pill" type="button" data-filter="data" aria-pressed="false">AI Evals, QA &amp; Risk</button>
+        <button class="filter-pill" type="button" data-filter="lnd" aria-pressed="false">Learning &amp; Enablement (5)</button>
+        <button class="filter-pill" type="button" data-filter="ops" aria-pressed="false">Operations &amp; Escalations (4)</button>
+        <button class="filter-pill" type="button" data-filter="cs" aria-pressed="false">Customer Success &amp; Onboarding (4)</button>
+        <button class="filter-pill" type="button" data-filter="data" aria-pressed="false">AI Workflows &amp; QA (4)</button>
       </div>
-      <p id="filter-status" class="meta-note" aria-live="polite">Showing 6 work samples for: All Work (6)</p>
+      <p id="filter-status" class="meta-note" aria-live="polite">Showing 6 work samples.</p>
 
-      <div class="card-grid" style="margin-top: 14px;">
+      <div class="card-grid mt-sm" id="samples-grid">
         <article class="card" data-categories="lnd cs">
           <div>
             <div class="tag-row">
               <span class="tag">L&amp;D / ADDIE</span>
-              <span class="tag tag-blue">vILT + Quiz</span>
+              <span class="tag tag-blue">vILT + Job Aid</span>
             </div>
-            <h3>Remote Onboarding Curriculum &amp; vILT Facilitator Kit</h3>
+            <h3>Remote Onboarding Curriculum &amp; Facilitator Kit</h3>
             <p>
-              Full ADDIE blueprint, 45-minute live virtual training (vILT) run-of-show for distributed teams, Loom/Scribe reinforcement plan, and interactive knowledge check on verifying AI-drafted workflows.
+              Structured ADDIE (Analyze, Design, Develop, Implement, Evaluate) blueprint, 45-minute live virtual training (vILT) run-of-show, 1-page printable job aid, Loom video script, and interactive 3-question quiz.
             </p>
           </div>
           <div class="card-footer">
-            <a href="./samples/onboarding-vilt-module.html">Open interactive module &rarr;</a>
+            <a href="./samples/onboarding-vilt-module.html">Open curriculum &rarr;</a>
             <span class="meta-note">Interactive sample</span>
           </div>
         </article>
@@ -99,11 +144,11 @@
           <div>
             <div class="tag-row">
               <span class="tag">SOP &amp; Job Aid</span>
-              <span class="tag tag-blue">Decision Tree</span>
+              <span class="tag tag-blue">Branching Tree</span>
             </div>
             <h3>High-Stakes Escalation Triage &amp; Warm-Handoff Tree</h3>
             <p>
-              Clickable visual job aid demonstrating severity classification, conflicting-record verification checklists across CRM/ticketing tools, owner confirmation, and recurring-gap SOP prevention.
+              Interactive 4-step branching job aid showing how specialists audit source records, confirm live receiving owners, trigger secondary escalation paths, and close recurring process gaps.
             </p>
           </div>
           <div class="card-footer">
@@ -115,12 +160,12 @@
         <article class="card" data-categories="lnd data ops">
           <div>
             <div class="tag-row">
-              <span class="tag">AI Output Review</span>
-              <span class="tag tag-blue">Claude &amp; Gemini</span>
+              <span class="tag">AI Quality Review</span>
+              <span class="tag tag-blue">Evidence Gates</span>
             </div>
             <h3>AI Content Validation &amp; Evidence-Gating Rubric</h3>
             <p>
-              Side-by-side draft vs. verified output inspector and interactive 6-gate rubric checking Claude/Gemini drafts for unsupported numbers, clarity, inclusive plain language, and factual traceability.
+              Side-by-side raw draft vs. human-verified output diffs, interactive 6-gate release checklist, and Python verification pattern catching invented numbers and unsafe shortcuts before release.
             </p>
           </div>
           <div class="card-footer">
@@ -133,28 +178,28 @@
           <div>
             <div class="tag-row">
               <span class="tag">Customer Enablement</span>
-              <span class="tag tag-blue">API &amp; Webhooks</span>
+              <span class="tag tag-blue">REST &amp; Webhooks</span>
             </div>
-            <h3>SaaS Onboarding &amp; Webhook Troubleshooting Job Aid</h3>
+            <h3>SaaS Onboarding &amp; Webhook Troubleshooting Guide</h3>
             <p>
-              Self-service configuration guide and interactive payload triage simulator showing how authentication errors, JSON schema mismatches, and Stripe webhook failures are isolated before escalation.
+              Self-service API and webhook troubleshooting simulator walking users through HTTP 401/403 scope mismatches, ISO date schema validation errors, and Stripe webhook signature checks.
             </p>
           </div>
           <div class="card-footer">
-            <a href="./samples/webhook-troubleshooting-job-aid.html">Open troubleshooting guide &rarr;</a>
-            <span class="meta-note">Interactive simulator</span>
+            <a href="./samples/webhook-troubleshooting-job-aid.html">Open playbook &rarr;</a>
+            <span class="meta-note">Interactive guide</span>
           </div>
         </article>
 
-        <article class="card" data-categories="ops data">
+        <article class="card" data-categories="ops data cs">
           <div>
             <div class="tag-row">
               <span class="tag">Operations QA</span>
-              <span class="tag tag-muted">Synthetic Demo</span>
+              <span class="tag tag-muted">Offline Exercise</span>
             </div>
             <h3>HRIS Identity Lifecycle &amp; Access Review Simulator</h3>
             <p>
-              Offline validator parsing fictional joiner, mover, and leaver CSV events, enforcing data rules, flagging anomalous transitions for human review, and generating audit JSON previews.
+              Client-side Human Resources Information System (HRIS) validator checking synthetic join, move, and leave CSV rows against business rules and outputting human-review recommendations.
             </p>
           </div>
           <div class="card-footer">
@@ -166,17 +211,17 @@
         <article class="card" data-categories="cs lnd data">
           <div>
             <div class="tag-row">
-              <span class="tag">Production Docs</span>
-              <span class="tag tag-blue">Live Portals</span>
+              <span class="tag">Live Documentation</span>
+              <span class="tag tag-blue">Published Portals</span>
             </div>
-            <h3>Public Onboarding &amp; Documentation Portals</h3>
+            <h3>Public Product Documentation &amp; User Guides</h3>
             <p>
-              Live user documentation and setup guides authored and maintained for Snippet Manager Pro and Engraphis MCP workflows, structured for fast self-service activation.
+              Live user documentation and onboarding guides written and maintained for Snippet Manager Pro and Engraphis Model Context Protocol (MCP) setup workflows.
             </p>
           </div>
           <div class="card-footer">
-            <a href="https://snippetmanagerpro.com/documentation.html" target="_blank" rel="noopener">Snippet Manager Docs &rarr;</a>
-            <a href="https://engraphis.com/mcp-memory-server" target="_blank" rel="noopener">Engraphis Docs &rarr;</a>
+            <a href="https://snippetmanagerpro.com/documentation.html" target="_blank" rel="noopener">Snippet Docs &rarr;</a>
+            <a href="https://engraphis.com/mcp-memory-server" target="_blank" rel="noopener">Engraphis MCP Docs &rarr;</a>
           </div>
         </article>
       </div>
@@ -187,7 +232,7 @@
         <div>
           <h2 id="platforms-heading">Live Production Web Platforms &amp; Tooling</h2>
           <p class="section-lead">
-            End-to-end ownership from onboarding UX, knowledge bases, and Stripe billing workflows to Python automation scripts and verification tooling.
+            Public web properties built and operated end to end: product requirements, onboarding flows, user help docs, Stripe billing workflows, release QA, and supporting Python automation.
           </p>
         </div>
       </div>
@@ -196,68 +241,68 @@
         <article class="card">
           <div>
             <div class="tag-row">
-              <span class="tag">Live SaaS Platform</span>
-              <span class="tag tag-muted">AI Memory &amp; Docs</span>
+              <span class="tag">Live Platform</span>
+              <span class="tag tag-muted">Structured Knowledge &amp; QA</span>
             </div>
             <h3>Engraphis (engraphis.com)</h3>
             <p>
-              Scoped persistent memory and verification platform built and operated since September 2025. Managed public site architecture, MCP server onboarding docs, release QA, and automated Python verification workflows.
+              Local-first knowledge store that keeps coding tools and AI workflows aligned across sessions by saving project rules, architectural decisions, and past fixes cleanly. I manage the website, onboarding setup docs, release QA, and Python workflow scripts.
             </p>
           </div>
           <div class="card-footer">
             <a href="https://engraphis.com" target="_blank" rel="noopener">Visit engraphis.com &rarr;</a>
-            <a href="https://github.com/Coding-Dev-Tools/engraphis" target="_blank" rel="noopener">View repository</a>
+            <a href="https://github.com/Coding-Dev-Tools/engraphis" target="_blank" rel="noopener">Source repository</a>
           </div>
         </article>
 
         <article class="card">
           <div>
             <div class="tag-row">
-              <span class="tag">Live SaaS Platform</span>
-              <span class="tag tag-muted">Stripe Checkout &amp; Onboarding</span>
+              <span class="tag">Live Platform</span>
+              <span class="tag tag-muted">Stripe Checkout &amp; Help Docs</span>
             </div>
             <h3>Snippet Manager Pro (snippetmanagerpro.com)</h3>
             <p>
-              Productivity platform where I manage onboarding flows, self-service user documentation, Stripe checkout and subscription reconciliation workflows, analytics, and direct user support.
+              Browser and desktop text-expansion productivity product where I own onboarding guides, self-service user documentation, Stripe checkout and subscription billing workflows, release QA, and user technical support.
             </p>
           </div>
           <div class="card-footer">
             <a href="https://snippetmanagerpro.com" target="_blank" rel="noopener">Visit snippetmanagerpro.com &rarr;</a>
-            <a href="https://snippetmanagerpro.com/documentation.html" target="_blank" rel="noopener">Documentation</a>
+            <a href="https://snippetmanagerpro.com/documentation.html" target="_blank" rel="noopener">User docs</a>
           </div>
         </article>
 
         <article class="card">
           <div>
             <div class="tag-row">
-              <span class="tag">Content &amp; Research Site</span>
-              <span class="tag tag-muted">Structured Comparisons</span>
+              <span class="tag">Live Web Property</span>
+              <span class="tag tag-muted">Comparison Guides</span>
             </div>
             <h3>VPN Security Blog (vpnsecurity.blog)</h3>
             <p>
-              Editorial and comparison web platform featuring structured product evaluation guides, responsive templates, clarity-focused technical writing, and user guidance.
+              Consumer privacy comparison and review publication structured around plain-English buying tables, security feature breakdowns, responsive UX, and clear troubleshooting walkthroughs.
             </p>
           </div>
           <div class="card-footer">
             <a href="https://vpnsecurity.blog" target="_blank" rel="noopener">Visit vpnsecurity.blog &rarr;</a>
-            <span class="meta-note">Editorial &amp; UX ownership</span>
+            <a href="https://github.com/Coding-Dev-Tools/awesome-vpn-privacy-2027" target="_blank" rel="noopener">Companion directory</a>
           </div>
         </article>
 
         <article class="card">
           <div>
             <div class="tag-row">
-              <span class="tag">Open-Source Verification</span>
-              <span class="tag tag-blue">Evidence &amp; Guardrails</span>
+              <span class="tag">Open-Source Utility</span>
+              <span class="tag tag-blue">Command &amp; Output Safety</span>
             </div>
-            <h3>Jev Decision &amp; Evidence Engine (GitHub)</h3>
+            <h3>Jev Verification Utility (GitHub)</h3>
             <p>
-              Lightweight verification and context-pruning workflow designed to guard execution commands, summarize dense logs safely, and audit completion claims against real recorded outputs.
+              Command-safety and output-filtering helper built to guard risky shell actions, compress noisy test logs before review, and confirm reported task completions match real recorded command evidence.
             </p>
           </div>
           <div class="card-footer">
             <a href="https://github.com/Coding-Dev-Tools/jev-decision" target="_blank" rel="noopener">View jev-decision repo &rarr;</a>
-            <a href="https://github.com/Coding-Dev-Tools" target="_blank" rel="noopener">All 65 org projects</a>
+            <a href="https://github.com/Coding-Dev-Tools" target="_blank" rel="noopener">All 65 org repos</a>
           </div>
         </article>
       </div>
@@ -266,20 +311,20 @@
     <section class="section" id="experience" aria-labelledby="experience-heading">
       <div class="section-header">
         <div>
-          <h2 id="experience-heading">Verified Experience Timeline</h2>
-          <p class="section-lead">Consistent, audit-clean record across operations, SaaS user enablement, and healthcare documentation.</p>
+          <h2 id="experience-heading">Experience</h2>
+          <p class="section-lead">Hands-on operational leadership, client onboarding, technical troubleshooting, and regulated healthcare documentation.</p>
         </div>
       </div>
 
       <div class="timeline">
         <article class="role-card">
           <div class="role-head">
-            <h3 class="role-title">Engraphis and Production Web Platforms | Independent Platform Operator and Product Operations Specialist</h3>
+            <h3 class="role-title">Engraphis, Snippet Manager Pro &amp; VPN Security Blog | Independent Platform Builder &amp; Operator</h3>
             <span class="role-dates">Sep 2025 - Present | Remote</span>
           </div>
           <ul class="role-list">
-            <li>Built, launched, and operate three production web platforms (engraphis.com, vpnsecurity.blog, snippetmanagerpro.com) across 65 repositories and projects, managing end-to-end site lifecycles from onboarding UX and documentation to Stripe billing workflows and user support.</li>
-            <li>Design structured evaluation and verification checks using Python, Claude, and Gemini to audit AI outputs for accuracy, completeness, and tone before deployment.</li>
+            <li><strong>End-to-end platform ownership:</strong> Built, launched, and operate three live web platforms (engraphis.com, snippetmanagerpro.com, vpnsecurity.blog) alongside 65 Coding-Dev-Tools repositories, owning requirements, release QA, user onboarding docs, Stripe billing workflows, and technical support.</li>
+            <li><strong>Evaluation &amp; automation workflows:</strong> Write Python scripts and structured verification checks ensuring AI-generated drafts and automated workflows match primary evidence before release.</li>
           </ul>
         </article>
 
@@ -289,8 +334,8 @@
             <span class="role-dates">Oct 2022 - Sep 2025 | Remote</span>
           </div>
           <ul class="role-list">
-            <li>Served as operational point of contact and on-duty supervisor for up to 80 remote specialists supporting 900+ hospitals, physician offices, clinical facilities, and major health plans (CalOptima, Molina, Humana, Monument Health, Texas Children's Health Plan), plus 200+ CenterWell locations after hours.</li>
-            <li>Authored SOPs, escalation decision trees, and visual onboarding job aids; facilitated Loom, Scribe, and live virtual walkthrough training for incoming specialists and charge nurses across Salesforce, Jira, and Epic Health Portal.</li>
+            <li><strong>Remote operations supervision:</strong> Served as operational point of contact and on-duty supervisor across up to 80 remote specialists supporting 900+ hospitals, physician offices, facilities, and health plans (CalOptima, Texas Children's Health Plan, Molina, Humana, Monument Health), plus 200+ CenterWell locations after hours.</li>
+            <li><strong>Training, SOPs &amp; escalations:</strong> Managed after-hours clinical routing, resolved member-services and payer escalations across Jira, customer relationship management (CRM) platforms, and Epic Health Portal, and authored standard operating procedures (SOPs), decision trees, Loom videos, and Scribe (screenshot guide) training for incoming points of contact and charge nurses.</li>
           </ul>
         </article>
 
@@ -300,19 +345,29 @@
             <span class="role-dates">Jun 2018 - Oct 2022 | Remote</span>
           </div>
           <ul class="role-list">
-            <li>Promoted the HaasOnline SaaS product as an independent partner and marketer (non-employee) while assisting users across an 11,800+ member ecosystem with onboarding, workflow setup, and retention support.</li>
-            <li>Wrote self-service configuration guides and FAQs, and helped users diagnose REST API key, webhook trigger, and JSON payload errors via clear reproduction walkthroughs.</li>
+            <li><strong>Independent partner enablement (non-employee):</strong> Promoted the HaasOnline SaaS platform while assisting users across an 11,800+ member community (7,000 Twitter followers and 4,800 Discord members) with onboarding, activation, and retention.</li>
+            <li><strong>Guides &amp; integration troubleshooting:</strong> Wrote user setup documentation and FAQs, and walked users through live REST API key, webhook, and workflow configuration troubleshooting.</li>
           </ul>
         </article>
 
         <article class="role-card">
           <div class="role-head">
-            <h3 class="role-title">A Brighter Future Inc. | Direct Support Professional and Medicaid Documentation Specialist</h3>
+            <h3 class="role-title">A Brighter Future Inc. | Direct Support Professional, Educator &amp; Medicaid Documentation Specialist</h3>
             <span class="role-dates">Jan 2012 - Jun 2018 | Kentucky</span>
           </div>
           <ul class="role-list">
-            <li>Coordinated care documentation and individualized support plans across physicians, behavioral therapists, occupational therapists, and families across six years in a regulated setting.</li>
-            <li>Audited Medicaid billing and service authorization records so written clinical notes and line items held up under state regulatory oversight.</li>
+            <li><strong>Multidisciplinary care coordination:</strong> Coordinated support routines and care plans alongside physicians, behavioral therapists, occupational therapists, and families across six years in a regulated Kentucky support setting.</li>
+            <li><strong>Regulated service &amp; billing records:</strong> Maintained thorough Medicaid billing records, service authorization documentation, and daily clinical progress notes.</li>
+          </ul>
+        </article>
+
+        <article class="role-card">
+          <div class="role-head">
+            <h3 class="role-title">Access Wireless | Independent Sales Representative / Order Processing</h3>
+            <span class="role-dates">Jan 2016 - Dec 2016 | Richmond, KY</span>
+          </div>
+          <ul class="role-list">
+            <li><strong>High-accuracy regulated enrollment:</strong> Handled 40+ daily compliance-regulated customer orders and account verifications inside CRM workflows.</li>
           </ul>
         </article>
       </div>
@@ -321,54 +376,75 @@
     <section class="section" id="credentials" aria-labelledby="credentials-heading">
       <div class="section-header">
         <div>
-          <h2 id="credentials-heading">Education, Verified Certificates &amp; Core Systems</h2>
+          <h2 id="credentials-heading">Education, Credentials &amp; Systems</h2>
         </div>
       </div>
 
       <div class="card-grid card-grid-2">
-        <div class="role-card">
-          <h3 class="role-title" style="margin-bottom: 10px;">Education &amp; Verified Credentials</h3>
-          <ul class="role-list">
-            <li><strong>Eastern Kentucky University</strong>: Undergraduate coursework in Computer Science, Communications, Psychology, and Nursing.</li>
+        <div class="info-panel">
+          <h3 class="role-title mt-0">Education &amp; Verified Credentials</h3>
+          <ul class="role-list mt-sm">
+            <li><strong>Eastern Kentucky University</strong>: Undergraduate coursework in Computer Science, Communications, Psychology, and Nursing (coursework only, no degree claimed).</li>
             <li>
-              <strong>IBM via Coursera</strong>: Collaborate Effectively for Professional Success (Completed Jan 2024) -
-              <a href="https://coursera.org/verify/ESLE8TB2QZUP" target="_blank" rel="noopener">Verify ESLE8TB2QZUP</a>
+              <strong>IBM via Coursera</strong>: Collaborate Effectively for Professional Success (Jan 2024) -
+              <a href="https://coursera.org/verify/ESLE8TB2QZUP" target="_blank" rel="noopener">Verify credential ESLE8TB2QZUP</a>
             </li>
             <li>
-              <strong>IBM via Coursera</strong>: Developing Interpersonal Skills (Completed Jan 2024) -
-              <a href="https://coursera.org/verify/VQYDVLN5AKDM" target="_blank" rel="noopener">Verify VQYDVLN5AKDM</a>
+              <strong>IBM via Coursera</strong>: Developing Interpersonal Skills (Jan 2024) -
+              <a href="https://coursera.org/verify/VQYDVLN5AKDM" target="_blank" rel="noopener">Verify credential VQYDVLN5AKDM</a>
             </li>
           </ul>
         </div>
 
-        <div class="role-card">
-          <h3 class="role-title" style="margin-bottom: 12px;">Verified Tools &amp; Platforms</h3>
-          <div class="pill-list">
-            <span class="skill-chip">Salesforce</span>
-            <span class="skill-chip">Jira</span>
-            <span class="skill-chip">Epic Health Portal</span>
-            <span class="skill-chip">Loom</span>
-            <span class="skill-chip">Scribe</span>
-            <span class="skill-chip">Notion</span>
-            <span class="skill-chip">Canva</span>
-            <span class="skill-chip">Google Workspace &amp; Sheets</span>
-            <span class="skill-chip">Microsoft Excel &amp; Office</span>
-            <span class="skill-chip">Claude &amp; Gemini Workflows</span>
-            <span class="skill-chip">Python &amp; JSON / REST APIs</span>
-            <span class="skill-chip">Stripe Checkout &amp; Billing</span>
-            <span class="skill-chip">Zapier</span>
-            <span class="skill-chip">GitHub</span>
-            <span class="skill-chip">Slack &amp; Discord</span>
+        <div class="info-panel">
+          <h3 class="role-title mt-0">Verified Systems &amp; Platforms</h3>
+          <div class="tools-groups mt-sm">
+            <div>
+              <p class="tools-group-label">CRM, Ticketing &amp; Healthcare Operations</p>
+              <div class="pill-list">
+                <span class="skill-chip">Salesforce</span>
+                <span class="skill-chip">Jira</span>
+                <span class="skill-chip">CRM Workflows</span>
+                <span class="skill-chip">Epic Health Portal</span>
+                <span class="skill-chip">Medicaid Documentation</span>
+              </div>
+            </div>
+            <div>
+              <p class="tools-group-label">Training, Documentation &amp; Enablement</p>
+              <div class="pill-list">
+                <span class="skill-chip">Loom</span>
+                <span class="skill-chip">Scribe (Visual Guides)</span>
+                <span class="skill-chip">Notion</span>
+                <span class="skill-chip">Canva</span>
+                <span class="skill-chip">Google Workspace</span>
+                <span class="skill-chip">Microsoft Office (Excel, Word)</span>
+              </div>
+            </div>
+            <div>
+              <p class="tools-group-label">Automation, Billing &amp; Technical Support</p>
+              <div class="pill-list">
+                <span class="skill-chip">Python</span>
+                <span class="skill-chip">REST APIs &amp; Webhooks</span>
+                <span class="skill-chip">Stripe Billing</span>
+                <span class="skill-chip">Zapier</span>
+                <span class="skill-chip">GitHub</span>
+                <span class="skill-chip">Slack &amp; Discord</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </section>
-
-    <footer class="footer">
-      <span>Joshua Williams | Richmond, Kentucky | US-Remote (Eastern Time)</span>
-      <span><a href="mailto:joshuawilliamsky@yahoo.com">joshuawilliamsky@yahoo.com</a> | <a href="https://www.linkedin.com/in/josh-williams-094338120" target="_blank" rel="noopener">LinkedIn</a> | <a href="https://github.com/Coding-Dev-Tools" target="_blank" rel="noopener">GitHub</a></span>
-    </footer>
   </main>
+
+  <footer class="footer">
+    <span>Joshua Williams | Richmond, Kentucky | US-Remote (Eastern Time)</span>
+    <span>
+      <a href="mailto:joshuawilliamsky@yahoo.com">joshuawilliamsky@yahoo.com</a> |
+      <a href="https://www.linkedin.com/in/josh-williams-094338120" target="_blank" rel="noopener">LinkedIn</a> |
+      <a href="https://github.com/Coding-Dev-Tools" target="_blank" rel="noopener">GitHub</a>
+    </span>
+  </footer>
 
   <script src="./app.js"></script>
 </body>

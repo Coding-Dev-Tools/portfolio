@@ -4,10 +4,20 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>AI Content Validation &amp; Evidence-Gating Rubric | Joshua Williams Portfolio</title>
-  <meta name="description" content="Sample workflow showing how Claude and Gemini drafts are audited for accuracy, unsupported metrics, plain language, inclusivity, and traceability before release.">
+  <meta name="description" content="Side-by-side comparison showing how generative AI drafts from language models are verified for unsupported metrics, privacy boundaries, plain language, and Python schema checks.">
+  <link rel="canonical" href="https://coding-dev-tools.github.io/portfolio/samples/ai-verification-rubric.html">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Joshua Williams Portfolio">
+  <meta property="og:title" content="AI Content Validation &amp; Evidence-Gating Rubric | Joshua Williams Portfolio">
+  <meta property="og:description" content="Side-by-side draft diffs, interactive 6-gate release checklist, and Python verification pattern.">
+  <meta property="og:url" content="https://coding-dev-tools.github.io/portfolio/samples/ai-verification-rubric.html">
+  <meta name="twitter:card" content="summary">
   <link rel="stylesheet" href="../styles.css">
 </head>
 <body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+
   <header class="topbar">
     <div class="topbar-inner">
       <a class="brand" href="../index.html">
@@ -20,135 +30,157 @@
         <a href="./escalation-decision-tree.html">Decision Tree</a>
         <a href="./ai-verification-rubric.html" aria-current="page">AI Eval Rubric</a>
         <a href="./webhook-troubleshooting-job-aid.html">Webhook Guide</a>
+        <a href="../demos/hris-identity/index.html">HRIS Simulator</a>
       </nav>
     </div>
   </header>
 
-  <main class="container">
-    <a class="breadcrumb" href="../index.html?focus=data">&larr; Back to AI Evals &amp; Quality Portfolio</a>
+  <main class="container" id="main-content" tabindex="-1">
+    <a class="breadcrumb" href="../index.html?focus=data">&larr; Back to AI Workflows &amp; QA Portfolio</a>
 
-    <section class="hero">
-      <span class="eyebrow">AI Quality &amp; Learning Content Review | Claude &amp; Gemini Validation</span>
-      <h1>Generative AI Validation &amp; Evidence-Gating Workflow</h1>
+    <section class="hero" aria-labelledby="rubric-hero-title">
+      <span class="eyebrow">AI Quality &amp; Content Validation | Evidence-Gated Review</span>
+      <h1 id="rubric-hero-title">Generative AI Validation &amp; Evidence-Gating Workflow</h1>
       <p class="hero-subtitle">
-        Generative AI tools accelerate first-pass instructional drafting, data curation, and investigative summaries, yet hallucinated metrics or vague jargon erode stakeholder trust immediately. This sample demonstrates my verification standard before any AI-assisted material ships.
+        AI language models (LLMs) accelerate drafting job aids, data summaries, and investigative timelines, yet invented statistics or policy shortcuts break trust fast. Below is how I audit automated drafts against primary evidence before anything ships.
       </p>
     </section>
 
     <section class="panel" aria-labelledby="diff-heading">
       <h2 id="diff-heading">1. Side-by-Side Comparison: Unverified Draft vs. Human-Verified Release</h2>
-      <p class="section-lead">Switch between sample contexts to see how unsupported claims, policy risk, and tone issues are caught cleanly.</p>
+      <p class="section-lead">Use tabs or Left/Right arrow keys to compare common failure modes across learning, data QA, and investigative writing.</p>
 
       <div class="tab-strip" role="tablist" data-tablist aria-label="AI Validation Scenarios">
-        <button class="tab-btn" type="button" role="tab" aria-selected="true" aria-controls="case-ld">L&amp;D Job Aid Draft</button>
-        <button class="tab-btn" type="button" role="tab" aria-selected="false" aria-controls="case-data">Data / Product Summary</button>
-        <button class="tab-btn" type="button" role="tab" aria-selected="false" aria-controls="case-inv">Investigative Case Note</button>
+        <button id="tab-case-ld" class="tab-btn" type="button" role="tab" aria-selected="true" aria-controls="case-ld" tabindex="0">L&amp;D Job Aid Draft</button>
+        <button id="tab-case-data" class="tab-btn" type="button" role="tab" aria-selected="false" aria-controls="case-data" tabindex="-1">Data / Product Summary</button>
+        <button id="tab-case-inv" class="tab-btn" type="button" role="tab" aria-selected="false" aria-controls="case-inv" tabindex="-1">Investigative Case Note</button>
       </div>
 
-      <div id="case-ld" role="tabpanel">
+      <div id="case-ld" role="tabpanel" aria-labelledby="tab-case-ld" tabindex="0">
         <div class="diff-grid">
           <div class="diff-box bad">
-            <h3 style="color: var(--danger); margin-top: 0;">Raw Unverified AI Draft (Rejected)</h3>
+            <h3 class="text-danger mt-0">Raw Unverified AI Draft (Rejected)</h3>
             <p>
-              "Our new clinic onboarding workflow reduces onboarding ramp time by 42% and ensures 100% error-free submissions. Always tell partners to email patient spreadsheets directly to support if the portal lags. Never bother clinical leads with edge cases."
+              "Our new clinic onboarding workflow cuts ramp time by 42% and ensures 100% error-free submissions. Always tell partners to email patient spreadsheets directly to support if the portal lags. Never bother clinical leads with edge cases."
             </p>
             <ul class="role-list">
-              <li><strong>Defect 1:</strong> Invented "42% ramp reduction" and "100% error-free" metrics not present in source SOPs.</li>
-              <li><strong>Defect 2:</strong> Unsafe workaround (emailing spreadsheets with sensitive patient records outside approved intake).</li>
-              <li><strong>Defect 3:</strong> Discourages escalation when edge cases genuinely require clinician or SME judgment.</li>
+              <li><strong>Defect 1:</strong> Invented "42% ramp reduction" and "100% error-free" metrics absent from source policy docs.</li>
+              <li><strong>Defect 2:</strong> Unsafe workaround (emailing patient spreadsheets outside approved encrypted intake).</li>
+              <li><strong>Defect 3:</strong> Discourages escalating edge cases when clinician or SME judgment is required.</li>
             </ul>
           </div>
           <div class="diff-box good">
-            <h3 style="color: var(--ok); margin-top: 0;">Verified Audit-Ready Output (Approved)</h3>
+            <h3 class="text-ok mt-0">Verified Audit-Ready Output (Approved)</h3>
             <p>
-              "Use the approved CRM intake checklist and 1-page Scribe visual aid during clinic onboarding. If the portal fails to sync, capture a redacted screenshot plus timestamp and route directly through the encrypted support queue, escalating unresolved blockers to your on-duty lead."
+              "Use the approved intake checklist and 1-page visual guide during clinic onboarding. If the portal fails to sync, capture a redacted screenshot plus timestamp, route via the encrypted queue, and escalate unresolved blockers to your on-duty lead."
             </p>
             <ul class="role-list">
-              <li>Verified against current policy and privacy safeguards.</li>
-              <li>Actionable plain-language verbs replacing unverified metrics.</li>
-              <li>Clear escalation trigger when standard steps do not resolve cleanly.</li>
+              <li>Aligned strictly with approved privacy and intake safeguards.</li>
+              <li>Clear action-oriented plain language with zero fabricated percentages.</li>
+              <li>Explicit escalation trigger when normal steps do not resolve.</li>
             </ul>
           </div>
         </div>
       </div>
 
-      <div id="case-data" role="tabpanel" hidden>
+      <div id="case-data" role="tabpanel" aria-labelledby="tab-case-data" tabindex="0" hidden>
         <div class="diff-grid">
           <div class="diff-box bad">
-            <h3 style="color: var(--danger); margin-top: 0;">Raw Unverified AI Draft (Rejected)</h3>
+            <h3 class="text-danger mt-0">Raw Unverified AI Draft (Rejected)</h3>
             <p>
-              "Dataset A is completely clean across all 50 states and ready for customer rollout today. Only 2 records failed parsing, so we can skip schema validation."
+              "Dataset A is completely clean across all states and ready for customer rollout today. Only 2 records failed parsing, so we can skip schema checks."
             </p>
             <ul class="role-list">
-              <li>Skipped denominator check (what % of required states were actually populated in source CSV?).</li>
-              <li>Ignored two failed parse rows without inspecting whether schema drift affects downstream joins.</li>
+              <li>Skipped denominator check (how many target states actually had valid coverage in the export?).</li>
+              <li>Ignored two failed parse rows without testing whether schema drift breaks downstream joins.</li>
             </ul>
           </div>
           <div class="diff-box good">
-            <h3 style="color: var(--ok); margin-top: 0;">Verified Audit-Ready Output (Approved)</h3>
+            <h3 class="text-ok mt-0">Verified Audit-Ready Output (Approved)</h3>
             <p>
-              "Evaluated 480 ingested clinic rows against required schema fields. Two records failed ISO date parsing in source feed X and remain quarantined with reproduction details attached. Hold production deployment until vendor confirms corrected date export."
+              "Evaluated 480 ingested rows against required schema fields. Two records failed ISO date parsing in source feed X and remain quarantined with reproduction details attached. Hold rollout until vendor confirms the corrected date export."
             </p>
             <ul class="role-list">
-              <li>Explicit observed sample count (`480 rows`) tied to real test output.</li>
+              <li>Explicit observed sample count (<code>480 rows</code>) tied to real script output.</li>
               <li>Isolated root cause cleanly before customer visibility.</li>
             </ul>
           </div>
         </div>
       </div>
 
-      <div id="case-inv" role="tabpanel" hidden>
+      <div id="case-inv" role="tabpanel" aria-labelledby="tab-case-inv" tabindex="0" hidden>
         <div class="diff-grid">
           <div class="diff-box bad">
-            <h3 style="color: var(--danger); margin-top: 0;">Raw Unverified AI Draft (Rejected)</h3>
+            <h3 class="text-danger mt-0">Raw Unverified AI Draft (Rejected)</h3>
             <p>
               "Customer account #882 appears fraudulent based on elevated refund requests. Recommend immediate permanent suspension."
             </p>
             <ul class="role-list">
-              <li>Jumped to conclusion without checking duplicate webhook retries or failed-card settlement logs.</li>
-              <li>No supporting evidence timeline for QA or compliance audit review.</li>
+              <li>Jumped to a harsh action without checking duplicate webhook retries or failed payment settlement logs.</li>
+              <li>Lacks supporting evidence timeline for QA or compliance review.</li>
             </ul>
           </div>
           <div class="diff-box good">
-            <h3 style="color: var(--ok); margin-top: 0;">Verified Audit-Ready Output (Approved)</h3>
+            <h3 class="text-ok mt-0">Verified Audit-Ready Output (Approved)</h3>
             <p>
-              "Reviewed three refund events on Account #882 (Nov 10 - Nov 12). Stripe payment logs confirm one duplicate client retry from an expired idempotency key rather than multiple distinct chargebacks. Verified customer identity history shows consistent billing region since onboarding; recommend closing as false positive and filing idempotency bug with Engineering."
+              "Reviewed three refund events on Account #882 (Nov 10 - Nov 12). Stripe payment logs confirm one duplicate client retry from an expired idempotency key rather than separate chargebacks. Customer identity history stays consistent since onboarding; close as false positive and file idempotency bug with Engineering."
             </p>
             <ul class="role-list">
-              <li>Separated false alarm from genuine red flags with traced ledger evidence.</li>
-              <li>Identified technical edge case cleanly for Product and Engineering.</li>
+              <li>Separated false alarm from genuine risk using traced payment ledger records.</li>
+              <li>Surfaced an actionable technical edge case directly to Product and Engineering.</li>
             </ul>
           </div>
         </div>
       </div>
+    </section>
+
+    <section class="panel" aria-labelledby="python-gate-heading">
+      <h2 id="python-gate-heading">2. Automated Python Evidence-Check Pattern</h2>
+      <p class="section-lead">In addition to manual review, automated Python verification checks block unverified claims or broken schema dates from sneaking into published packets.</p>
+      <pre>import re
+
+FORBIDDEN_UNVERIFIED = (
+    ("unverified_sla", r"(?&lt;!\d)99\.2"),
+    ("unsupported_claim", r"100%\s+error-free"),
+    ("blanket_promise", r"all\s+50\s+states\s+verified"),
+)
+
+def assert_verified_text(draft_text: str) -> None:
+    for label, pattern in FORBIDDEN_UNVERIFIED:
+        if re.search(pattern, draft_text, flags=re.IGNORECASE):
+            raise ValueError(f"Blocked unverified claim ({label}) prior to release.")</pre>
     </section>
 
     <section class="panel" aria-labelledby="rubric-heading">
       <div class="section-header">
         <div>
-          <h2 id="rubric-heading">2. Interactive 6-Gate Pre-Release Review Checklist</h2>
-          <p class="section-lead">Used when reviewing AI-drafted job aids, training decks, data summaries, or case narratives.</p>
+          <h2 id="rubric-heading">3. Interactive 6-Gate Pre-Release Review Checklist</h2>
+          <p class="section-lead">Used before releasing AI-assisted job aids, training slides, data briefs, or case notes.</p>
         </div>
-        <strong id="rubric-score" style="color: var(--teal); font-size: 1.05rem;">0 / 6 Verification Gates Passed</strong>
+        <div class="hero-actions mt-0">
+          <strong id="rubric-score" class="text-teal" aria-live="polite">0 / 6 Verification Gates Passed</strong>
+          <button id="rubric-preset" class="btn btn-secondary" type="button">Load Passing Example (6/6)</button>
+          <button id="rubric-clear" class="btn btn-secondary" type="button">Clear All</button>
+        </div>
       </div>
 
-      <div style="display: grid; gap: 10px;">
-        <label><input type="checkbox" data-rubric-check checked> <strong>1. Source Traceability:</strong> Every date, tool name, and workflow step exists in approved primary documentation.</label>
-        <label><input type="checkbox" data-rubric-check checked> <strong>2. Zero Invented Metrics:</strong> All percentages, volumes, or SLA claims come from verified exports rather than LLM plausibility.</label>
-        <label><input type="checkbox" data-rubric-check checked> <strong>3. Privacy &amp; Compliance Boundary:</strong> Zero confidential patient, customer, or internal employer details included.</label>
-        <label><input type="checkbox" data-rubric-check> <strong>4. Clear Inclusive Tone:</strong> Uses respectful, accessible, jargon-free language tailored for both new hires and SMEs.</label>
-        <label><input type="checkbox" data-rubric-check> <strong>5. Edge-Case Coverage:</strong> States what to do when the happy path fails and who owns escalation.</label>
-        <label><input type="checkbox" data-rubric-check> <strong>6. Visual &amp; Workflow Spot-Check:</strong> Tested in a real preview/UI session after the final edit.</label>
+      <div class="check-list mt-sm">
+        <label class="check-item"><input type="checkbox" data-rubric-check> <span><strong>1. Source Traceability:</strong> Every date, tool name, and workflow step exists in approved primary documentation.</span></label>
+        <label class="check-item"><input type="checkbox" data-rubric-check> <span><strong>2. Zero Invented Metrics:</strong> All percentages, counts, and service level agreement (SLA) references come from real exports rather than AI guesswork.</span></label>
+        <label class="check-item"><input type="checkbox" data-rubric-check> <span><strong>3. Privacy &amp; Compliance Boundary:</strong> Zero confidential patient, customer, or internal employer details exposed.</span></label>
+        <label class="check-item"><input type="checkbox" data-rubric-check> <span><strong>4. Clear Inclusive Tone:</strong> Uses plain, accessible, jargon-free language tailored for both new hires and reviewers.</span></label>
+        <label class="check-item"><input type="checkbox" data-rubric-check> <span><strong>5. Edge-Case Coverage:</strong> Explains what to do when normal steps fail and who owns escalation.</span></label>
+        <label class="check-item"><input type="checkbox" data-rubric-check> <span><strong>6. Visual &amp; Workflow Spot-Check:</strong> Rendered, clicked, and verified in a live preview after the final edit.</span></label>
       </div>
 
-      <div id="rubric-note" class="callout callout-amber"></div>
+      <div id="rubric-note" class="callout callout-neutral" aria-live="polite"></div>
     </section>
-
-    <footer class="footer">
-      <span><a href="../index.html">&larr; Back to Joshua Williams Portfolio</a></span>
-      <span><a href="./onboarding-vilt-module.html">&larr; Previous: L&amp;D ADDIE Module</a></span>
-    </footer>
   </main>
+
+  <footer class="footer">
+    <span><a href="./escalation-decision-tree.html">&larr; Previous: Decision Tree</a></span>
+    <span><a href="./webhook-troubleshooting-job-aid.html">Next Sample: Webhook Guide &rarr;</a></span>
+  </footer>
 
   <script src="./samples.js"></script>
 </body>

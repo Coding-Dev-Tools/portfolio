@@ -4,10 +4,20 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>SaaS Onboarding &amp; Webhook Troubleshooting Guide | Joshua Williams Portfolio</title>
-  <meta name="description" content="Self-service SaaS integration job aid and interactive REST/webhook payload triage simulator for Customer Success and Technical Support enablement.">
+  <meta name="description" content="Self-service SaaS integration guide diagnosing HTTP 401/403 scope mismatches, ISO date schema errors, and Stripe webhook HMAC-SHA256 signature verification.">
+  <link rel="canonical" href="https://coding-dev-tools.github.io/portfolio/samples/webhook-troubleshooting-job-aid.html">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Joshua Williams Portfolio">
+  <meta property="og:title" content="SaaS Onboarding &amp; Webhook Troubleshooting Guide | Joshua Williams Portfolio">
+  <meta property="og:description" content="Self-service integration triage playbook for Customer Success and Technical Support enablement.">
+  <meta property="og:url" content="https://coding-dev-tools.github.io/portfolio/samples/webhook-troubleshooting-job-aid.html">
+  <meta name="twitter:card" content="summary">
   <link rel="stylesheet" href="../styles.css">
 </head>
 <body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+
   <header class="topbar">
     <div class="topbar-inner">
       <a class="brand" href="../index.html">
@@ -20,46 +30,49 @@
         <a href="./escalation-decision-tree.html">Decision Tree</a>
         <a href="./ai-verification-rubric.html">AI Eval Rubric</a>
         <a href="./webhook-troubleshooting-job-aid.html" aria-current="page">Webhook Guide</a>
+        <a href="../demos/hris-identity/index.html">HRIS Simulator</a>
       </nav>
     </div>
   </header>
 
-  <main class="container">
+  <main class="container" id="main-content" tabindex="-1">
     <a class="breadcrumb" href="../index.html?focus=cs">&larr; Back to Customer Success Portfolio</a>
 
-    <section class="hero">
+    <section class="hero" aria-labelledby="wh-hero-title">
       <span class="eyebrow">Customer Enablement &amp; Support Documentation | Self-Service Job Aid</span>
-      <h1>SaaS Integration &amp; Webhook Troubleshooting Playbook</h1>
+      <h1 id="wh-hero-title">SaaS Integration &amp; Webhook Troubleshooting Playbook</h1>
       <p class="hero-subtitle">
-        A customer-facing enablement guide built from my experience helping thousands of SaaS users diagnose client-side configuration, API key permission, JSON payload, and webhook delivery issues cleanly before escalating.
+        Self-service REST application programming interface (API) and webhook diagnostic guide shaped by four years assisting HaasOnline users across an 11,800+ member community and operating Stripe checkout webhooks on live production web platforms.
       </p>
     </section>
 
     <section class="panel" aria-labelledby="triage-sim-heading">
       <h2 id="triage-sim-heading">Interactive Payload Triage Scenarios</h2>
-      <p class="section-lead">Select a common SaaS integration failure mode to inspect reproduction evidence, root-cause isolation steps, and customer update phrasing.</p>
+      <p class="section-lead">Use tabs or Left/Right arrow keys to inspect failure evidence, root-cause verification steps, and clear customer update wording (including cryptographic HMAC-SHA256 webhook checks).</p>
 
-      <div class="tab-strip" role="tablist" aria-label="Webhook Failure Modes">
-        <button class="tab-btn" type="button" data-webhook-case="auth_401" aria-selected="true">HTTP 401 Scope Mismatch</button>
-        <button class="tab-btn" type="button" data-webhook-case="schema_400" aria-selected="false">HTTP 400 Date / Schema Error</button>
-        <button class="tab-btn" type="button" data-webhook-case="sig_mismatch" aria-selected="false">Webhook Signature Mismatch</button>
+      <div id="webhook-tablist" class="tab-strip" role="tablist" data-tablist aria-label="Webhook Failure Modes">
+        <button id="tab-wh-auth" class="tab-btn" type="button" role="tab" data-webhook-case="auth_401" aria-controls="wh-panel" aria-selected="true" tabindex="0">HTTP 401 / 403 Scope Mismatch</button>
+        <button id="tab-wh-schema" class="tab-btn" type="button" role="tab" data-webhook-case="schema_400" aria-controls="wh-panel" aria-selected="false" tabindex="-1">HTTP 400 Date / Schema Error</button>
+        <button id="tab-wh-sig" class="tab-btn" type="button" role="tab" data-webhook-case="sig_mismatch" aria-controls="wh-panel" aria-selected="false" tabindex="-1">Webhook Signature Mismatch</button>
       </div>
 
-      <h3 id="wh-title" style="color: var(--teal); margin-top: 8px;">Case</h3>
-      <p style="font-weight: 600; margin-bottom: 6px;">Captured Request / Error Evidence (Sanitized Sample)</p>
-      <pre id="wh-payload"></pre>
+      <div id="wh-panel" role="tabpanel" aria-labelledby="tab-wh-auth" aria-live="polite" tabindex="0">
+        <h3 id="wh-title" class="text-teal mt-sm">Case</h3>
+        <p class="fw-600 mt-sm">Captured Request / Error Evidence (Sanitized Sample)</p>
+        <pre id="wh-payload"></pre>
 
-      <p style="font-weight: 600; margin: 16px 0 6px;">Step-by-Step Self-Service Resolution</p>
-      <pre id="wh-diagnosis"></pre>
+        <p class="fw-600 mt-md">Step-by-Step Self-Service Resolution</p>
+        <ol id="wh-diagnosis" class="resolution-steps"></ol>
 
-      <div id="wh-comms" class="callout callout-teal" style="margin-top: 16px;"></div>
+        <div id="wh-comms" class="callout callout-teal mt-md"></div>
+      </div>
     </section>
-
-    <footer class="footer">
-      <span><a href="../index.html">&larr; Back to Joshua Williams Portfolio</a></span>
-      <span><a href="../demos/hris-identity/index.html">Next Sample: HRIS Lifecycle Simulator &rarr;</a></span>
-    </footer>
   </main>
+
+  <footer class="footer">
+    <span><a href="./ai-verification-rubric.html">&larr; Previous: AI Eval Rubric</a></span>
+    <span><a href="../demos/hris-identity/index.html">Next Sample: HRIS Simulator &rarr;</a></span>
+  </footer>
 
   <script src="./samples.js"></script>
 </body>

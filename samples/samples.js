@@ -1,247 +1,418 @@
 (() => {
-  // 1. Generic accessible tablist controller
-  document.querySelectorAll("[data-tablist]").forEach((list) => {
-    const tabs = Array.from(list.querySelectorAll('[role="tab"]'));
-    const panels = tabs.map((tab) => document.getElementById(tab.getAttribute("aria-controls") || ""));
+  // 1. Unified WAI-ARIA Tablist controller (supports standard panels & dynamic webhook views)
+  const WEBHOOK_CASES = {
+    auth_401: {
+      title: "HTTP 401 / 403 - Webhook Auth Token or Permission Scope Mismatch",
+      payload:
+        'POST /v1/webhooks/endpoints\nAuthorization: Bearer api_tok_readonly_***\n\n' +
+        'Response: 403 {"error":"insufficient_scope","required":"webhooks:write","environment":"production"}',
+      steps: [
+        "Verify whether the request targets test/sandbox vs. production and confirm the API key matches that environment.",
+        "Confirm token permission scopes include webhooks:write (read-only tokens fail cleanly with 401/403).",
+        "If testing client-side vs. server-side keys, move write operations strictly to server configuration with secret keys before rotating tokens.",
+      ],
+      comms:
+        "Customer Update Template: We isolated an environment/scope mismatch on your webhook management key (read-only scope against a write endpoint). No queued events were lost. Updating the server environment variable to a webhooks:write credential clears the 403 response.",
+    },
+    schema_400: {
+      title: "HTTP 400 Bad Request - Date Format or Required JSON Field Missing",
+      payload:
+        'POST /v1/events/sync\n{"account_id":"acct_492","effective_date":"11/16/2026"}\n\n' +
+        'Response: 400 {"error":"invalid_date_iso8601","field":"effective_date"}',
+      steps: [
+        "Inspect required keys and field types in the API schema guide against the captured request body.",
+        "Normalize timestamps and calendar dates to ISO-8601 (YYYY-MM-DD) prior to serialization.",
+        "Replay one single validated test record before re-enabling scheduled batch syncs.",
+      ],
+      comms:
+        "Customer Update Template: The sync rejected because effective_date arrived as MM/DD/YYYY instead of ISO-8601 (YYYY-MM-DD). Updating the field formatter in your integration resolves the 400 validation error.",
+    },
+    sig_mismatch: {
+      title: "Webhook Signature Verification Failed (Parsed vs. Raw Request Body)",
+      payload:
+        'Stripe-Signature: t=1794826292,v1=9f4a...\nMiddleware ran JSON.parse() before cryptographic HMAC-SHA256 verification.\n\n' +
+        'Response: 400 {"error":"webhook_signature_verification_failed"}',
+      steps: [
+        "Confirm the webhook route passes raw, unparsed request bytes into constructEvent() / HMAC verification before any JSON body parser runs.",
+        "Confirm the endpoint webhook signing secret (whsec_...) matches the destination environment and clock skew stays within tolerance.",
+        "Trigger a fresh signed test event from the dashboard rather than re-posting hand-edited JSON.",
+      ],
+      comms:
+        "Customer Update Template: Webhook requests reached your endpoint intact, but body parsing altered whitespace before cryptographic signature verification. Passing raw bytes into the signature check restores 200 OK delivery.",
+    },
+  };
 
-    function selectTab(targetTab) {
-      tabs.forEach((tab, idx) => {
-        const active = tab === targetTab;
-        tab.setAttribute("aria-selected", active ? "true" : "false");
-        if (panels[idx]) {
-          panels[idx].hidden = !active;
-        }
+  function updateWebhookPanel(caseKey) {
+    const data = WEBHOOK_CASES[caseKey];
+    if (!data) return;
+    const titleEl = document.getElementById("wh-title");
+    const payloadEl = document.getElementById("wh-payload");
+    const stepsEl = document.getElementById("wh-diagnosis");
+    const commsEl = document.getElementById("wh-comms");
+    if (titleEl) titleEl.textContent = data.title;
+    if (payloadEl) payloadEl.textContent = data.payload;
+    if (stepsEl) {
+      stepsEl.replaceChildren();
+      data.steps.forEach((step) => {
+        const li = document.createElement("li");
+        li.textContent = step;
+        stepsEl.appendChild(li);
       });
     }
+    if (commsEl) commsEl.textContent = data.comms;
+  }
 
-    tabs.forEach((tab) => {
-      tab.addEventListener("click", () => selectTab(tab));
+  document.querySelectorAll("[data-tablist]").forEach((list) => {
+    const tabs = Array.from(list.querySelectorAll('[role="tab"]'));
+    if (!tabs.length) return;
+    const isDynamicWebhook = tabs.some((t) => t.hasAttribute("data-webhook-case"));
+
+    function selectTab(targetTab, focusTab = false) {
+      tabs.forEach((tab) => {
+        const active = tab === targetTab;
+        tab.setAttribute("aria-selected", active ? "true" : "false");
+        tab.setAttribute("tabindex", active ? "0" : "-1");
+
+        const panelId = tab.getAttribute("aria-controls");
+        const panel = panelId ? document.getElementById(panelId) : null;
+        if (panel && !isDynamicWebhook) {
+          panel.hidden = !active;
+        }
+      });
+
+      if (isDynamicWebhook) {
+        const panel = document.getElementById(targetTab.getAttribute("aria-controls") || "");
+        if (panel && targetTab.id) {
+          panel.setAttribute("aria-labelledby", targetTab.id);
+        }
+        updateWebhookPanel(targetTab.getAttribute("data-webhook-case"));
+      }
+
+      if (focusTab) targetTab.focus();
+    }
+
+    tabs.forEach((tab, index) => {
+      tab.addEventListener("click", () => selectTab(tab, false));
+      tab.addEventListener("keydown", (event) => {
+        let nextIndex = null;
+        if (event.key === "ArrowRight") nextIndex = (index + 1) % tabs.length;
+        else if (event.key === "ArrowLeft") nextIndex = (index - 1 + tabs.length) % tabs.length;
+        else if (event.key === "Home") nextIndex = 0;
+        else if (event.key === "End") nextIndex = tabs.length - 1;
+        if (nextIndex !== null) {
+          event.preventDefault();
+          selectTab(tabs[nextIndex], true);
+        }
+      });
     });
+
+    const initialTab = tabs.find((t) => t.getAttribute("aria-selected") === "true") || tabs[0];
+    selectTab(initialTab, false);
   });
 
-  // 2. Interactive scenario quizzes
-  document.querySelectorAll("[data-quiz-question]").forEach((block) => {
+  // 2. Interactive scenario quiz with live score counter & Reset
+  const quizQuestions = Array.from(document.querySelectorAll("[data-quiz-question]"));
+  const quizScoreEl = document.getElementById("quiz-score");
+  const quizResetBtn = document.getElementById("quiz-reset");
+
+  function refreshQuizScore() {
+    if (!quizScoreEl || !quizQuestions.length) return;
+    const correctCount = quizQuestions.filter((q) => q.getAttribute("data-answered-correct") === "true").length;
+    quizScoreEl.textContent = `Score: ${correctCount} / ${quizQuestions.length} Correct`;
+  }
+
+  quizQuestions.forEach((block) => {
     const feedback = block.querySelector("[data-quiz-feedback]");
     const options = Array.from(block.querySelectorAll("button.quiz-option"));
     options.forEach((btn) => {
       btn.addEventListener("click", () => {
-        options.forEach((o) => o.classList.remove("is-correct", "is-wrong"));
+        options.forEach((o) => {
+          o.classList.remove("is-correct", "is-wrong");
+          o.setAttribute("aria-pressed", "false");
+        });
         const isCorrect = btn.getAttribute("data-correct") === "true";
         btn.classList.add(isCorrect ? "is-correct" : "is-wrong");
+        btn.setAttribute("aria-pressed", "true");
+        block.setAttribute("data-answered-correct", isCorrect ? "true" : "false");
         if (feedback) {
-          feedback.textContent = btn.getAttribute("data-rationale") || "";
+          const prefix = isCorrect ? "[Correct] " : "[Needs review] ";
+          feedback.textContent = prefix + (btn.getAttribute("data-rationale") || "");
           feedback.className = isCorrect ? "callout callout-teal" : "callout callout-amber";
         }
+        refreshQuizScore();
       });
     });
   });
 
-  // 3. Decision tree walker (escalation-decision-tree.html)
+  if (quizResetBtn) {
+    quizResetBtn.addEventListener("click", () => {
+      quizQuestions.forEach((block) => {
+        block.removeAttribute("data-answered-correct");
+        block.querySelectorAll("button.quiz-option").forEach((btn) => {
+          btn.classList.remove("is-correct", "is-wrong");
+          btn.removeAttribute("aria-pressed");
+        });
+        const feedback = block.querySelector("[data-quiz-feedback]");
+        if (feedback) {
+          feedback.textContent = "";
+          feedback.className = "";
+        }
+      });
+      refreshQuizScore();
+    });
+  }
+  refreshQuizScore();
+
+  // 3. Decision tree walker (4 complete steps per track, Back button, Copy Note, focus preservation)
   const treeHost = document.getElementById("decision-tree-app");
   if (treeHost) {
     const NODES = {
       start: {
-        step: "Step 1 of 4: Classify Incoming Escalation",
-        prompt: "A frontline team member or partner submits an urgent issue that stalled on initial intake. What best describes the primary failure mode?",
+        stepNum: 1,
+        title: "Classify Incoming Escalation",
+        prompt: "A frontline specialist or partner flags an issue that stalled at intake. Select the primary failure mode:",
         choices: [
           {
-            label: "Conflicting Client or Billing Record (data mismatch across CRM / portal)",
+            label: "Track A: Conflicting Client or Billing Record (CRM / portal mismatch)",
             next: "record_mismatch",
-            tag: "Track A: Record Audit",
+            summaryAdd: "Triage Track: Record Mismatch Audit (CRM vs. primary portal state).",
           },
           {
-            label: "Time-Sensitive Handoff Delay (unconfirmed receiving owner)",
+            label: "Track B: Time-Sensitive Handoff Delay (unconfirmed receiving owner)",
             next: "stalled_handoff",
-            tag: "Track B: Warm Handoff",
+            summaryAdd: "Triage Track: Urgent Warm-Handoff Owner Confirmation.",
           },
           {
-            label: "Repeated Workflow Confusion Across Multiple Specialists",
+            label: "Track C: Repeat Process Confusion Across Multiple Specialists",
             next: "workflow_gap",
-            tag: "Track C: Training & SOP Fix",
+            summaryAdd: "Triage Track: Repeat Workflow Defect & Enablement Fix.",
           },
         ],
       },
       record_mismatch: {
-        step: "Step 2 of 4: Audit Source-of-Truth Fields",
-        prompt: "Before escalating outward, check primary billing/CRM state, effective dates, and exact error payload. What do you observe?",
+        stepNum: 2,
+        title: "Audit Source-of-Truth Fields",
+        prompt: "Before routing externally, verify effective dates, billing status, and request error logs. What did you find?",
         choices: [
           {
-            label: "Source record shows missing authorization date or outdated stakeholder contact",
+            label: "Intake record missed an authorization date or stakeholder contact update",
             next: "warm_handoff_confirm",
-            summaryAdd: "Root Cause: Incomplete intake record verified against primary system before external outreach.",
+            summaryAdd: "Root Cause: Corrected missing intake fields against primary system of record.",
           },
           {
-            label: "Both systems disagree due to webhook / integration sync failure",
+            label: "Systems disagree because an automated webhook or sync event failed",
             next: "tech_repro",
-            summaryAdd: "Root Cause: Integration discrepancy isolated with timestamps and exact request/payload IDs.",
+            summaryAdd: "Root Cause: Isolated integration sync discrepancy with timestamps and payload IDs.",
           },
         ],
       },
       stalled_handoff: {
-        step: "Step 2 of 4: Verify Next Owner Availability",
-        prompt: "Never leave an escalated ticket waiting silently in a shared queue. How do you secure accountability?",
+        stepNum: 2,
+        title: "Verify Receiving Owner Availability",
+        prompt: "Never leave an urgent escalation sitting unacknowledged in a shared queue. Secure named ownership:",
         choices: [
           {
-            label: "Confirm live contact directly, summarize verified facts, and get explicit acceptance",
+            label: "Contact primary on-call/partner lead live and deliver verified summary",
             next: "warm_handoff_confirm",
-            summaryAdd: "Containment: Direct owner contact completed; verified summary accepted live.",
+            summaryAdd: "Containment: Contacted primary receiving owner directly with verified context.",
           },
           {
-            label: "Primary owner unavailable within SLA window - escalate to backup on-duty lead",
+            label: "Primary owner unavailable within SLA window - trigger secondary backup lead",
             next: "warm_handoff_confirm",
-            summaryAdd: "Containment: Triggered secondary escalation matrix and notified affected partner of exact ETA.",
+            summaryAdd: "Containment: Escalated to backup on-duty lead and updated expected response ETA.",
           },
         ],
       },
       workflow_gap: {
-        step: "Step 2 of 4: Identify Training vs. Process Defect",
-        prompt: "Three specialists made the same documentation mistake this week. What is the permanent fix?",
+        stepNum: 2,
+        title: "Separate Training Gap vs. System Defect",
+        prompt: "Three team members hit the same issue this week. Choose the structural root-cause intervention:",
         choices: [
           {
-            label: "Publish a 1-page visual Scribe job aid + 3-minute Loom walkthrough and update SOP",
-            next: "sop_close",
-            summaryAdd: "Prevention: Authored 1-page Scribe visual aid + Loom micro-video and updated onboarding deck.",
+            label: "Steps work as designed, but job aid guidance is unclear or outdated",
+            next: "publish_enablement",
+            summaryAdd: "Diagnosis: Workflow works, but frontline documentation lacked step-by-step clarity.",
           },
           {
-            label: "Flag confusing form validation directly to Product / Ops with concrete examples",
-            next: "sop_close",
-            summaryAdd: "Prevention: Logged actionable UX/validation spec to Product with three reproduced ticket links.",
+            label: "Product validation allows ambiguous inputs that generate downstream tickets",
+            next: "publish_enablement",
+            summaryAdd: "Diagnosis: Form validation edge case reproduced for Product and Operations review.",
           },
         ],
       },
       tech_repro: {
-        step: "Step 3 of 4: Package Engineering-Ready Reproduction",
-        prompt: "You isolated the exact integration condition. Package what Engineering/Product needs so they never have to bounce the ticket back.",
+        stepNum: 3,
+        title: "Package Engineering-Ready Reproduction",
+        prompt: "Capture complete diagnostics so Engineering never needs to bounce the ticket back for basics:",
         choices: [
           {
-            label: "Attach timestamp, expected vs. actual state, sanitized payload, and customer impact",
+            label: "Attach timestamp, expected vs. actual state, sanitized JSON payload, and impact",
             next: "sop_close",
-            summaryAdd: "Handoff Package: Timestamped reproduction steps + expected vs. actual JSON/UI diff attached.",
+            summaryAdd: "Handoff Standard: Timestamped reproduction package with expected vs. actual diff attached.",
           },
         ],
       },
       warm_handoff_confirm: {
-        step: "Step 3 of 4: Close Communication Loop",
-        prompt: "Receiving owner has confirmed responsibility. What closes the risk for the client or family waiting on resolution?",
+        stepNum: 3,
+        title: "Confirm Ownership & Close Communication Loop",
+        prompt: "The receiving lead accepted responsibility. Confirm accountability before exiting the case:",
         choices: [
           {
-            label: "Log owner name + timestamp in CRM/Jira and send written status update to stakeholder",
+            label: "Log owner name + timestamp in CRM/Jira and notify waiting partner in writing",
             next: "sop_close",
-            summaryAdd: "Closure Standard: Logged named owner, timestamp, and proactive stakeholder status confirmation.",
+            summaryAdd: "Closure Standard: Recorded named owner, acceptance timestamp, and written stakeholder update.",
+          },
+        ],
+      },
+      publish_enablement: {
+        stepNum: 3,
+        title: "Ship Reinforcement Asset & Verify Adoption",
+        prompt: "Close the loop so repeat errors actually drop after your fix ships:",
+        choices: [
+          {
+            label: "Publish 1-page visual job aid + brief Loom clip and QA next 10 completed cases",
+            next: "sop_close",
+            summaryAdd: "Prevention Shipped: Published 1-page visual aid + micro-walkthrough and queued post-launch QA.",
+          },
+          {
+            label: "File Product/Ops change ticket with 3 examples and interim specialist workaround",
+            next: "sop_close",
+            summaryAdd: "Prevention Shipped: Logged Product bug with 3 case examples and interim SOP workaround.",
           },
         ],
       },
       sop_close: {
-        step: "Step 4 of 4: Completed Escalation Handoff Summary",
-        prompt: "Audit-ready summary generated. Use this exact structure in CRM/Jira so leadership, peers, and compliance QA can verify every step.",
+        stepNum: 4,
+        title: "Audit-Ready Handoff Note Complete",
+        prompt: "Copy this verified summary directly into CRM or Jira so peers, leads, and QA auditors can verify every decision.",
         terminal: true,
       },
     };
 
-    const history = [];
+    const stack = [{ nodeKey: "start", summaryAdd: null }];
     const stepEl = document.getElementById("tree-step");
     const promptEl = document.getElementById("tree-prompt");
     const choicesEl = document.getElementById("tree-choices");
     const summaryEl = document.getElementById("tree-summary");
+    const backBtn = document.getElementById("tree-back");
     const resetBtn = document.getElementById("tree-reset");
+    const copyBtn = document.getElementById("tree-copy");
+    const copyStatus = document.getElementById("tree-copy-status");
 
-    function render(nodeKey) {
-      const node = NODES[nodeKey];
+    function render(moveFocus = false) {
+      const current = stack[stack.length - 1];
+      const node = NODES[current.nodeKey];
       if (!node) return;
-      if (stepEl) stepEl.textContent = node.step;
+      if (stepEl) stepEl.textContent = `Step ${node.stepNum} of 4: ${node.title}`;
       if (promptEl) promptEl.textContent = node.prompt;
+      if (backBtn) backBtn.disabled = stack.length <= 1;
+
       if (choicesEl) {
-        choicesEl.innerHTML = "";
+        choicesEl.replaceChildren();
         (node.choices || []).forEach((ch) => {
           const btn = document.createElement("button");
           btn.type = "button";
           btn.className = "quiz-option";
           btn.textContent = ch.label;
           btn.addEventListener("click", () => {
-            history.push(ch.summaryAdd || `Selection: ${ch.label}`);
-            render(ch.next);
+            stack.push({ nodeKey: ch.next, summaryAdd: ch.summaryAdd });
+            render(true);
           });
           choicesEl.appendChild(btn);
         });
       }
+
       if (summaryEl) {
-        const lines = history.length
-          ? history.map((item, i) => `${i + 1}. ${item}`)
-          : ["Select a triage path above to construct a verified handoff summary."];
-        summaryEl.textContent = lines.join("\n");
+        const items = stack.slice(1).map((s, idx) => `${idx + 1}. ${s.summaryAdd}`);
+        summaryEl.textContent = items.length
+          ? items.join("\n")
+          : "Select a triage path above to construct a verified handoff summary.";
       }
+
+      if (copyStatus) copyStatus.textContent = "";
+
+      if (moveFocus) {
+        if (node.terminal && resetBtn) {
+          resetBtn.focus();
+        } else if (stepEl) {
+          stepEl.focus();
+        }
+      }
+    }
+
+    if (backBtn) {
+      backBtn.addEventListener("click", () => {
+        if (stack.length > 1) {
+          stack.pop();
+          render(true);
+        }
+      });
     }
 
     if (resetBtn) {
       resetBtn.addEventListener("click", () => {
-        history.length = 0;
-        render("start");
+        stack.length = 1;
+        stack[0] = { nodeKey: "start", summaryAdd: null };
+        render(true);
       });
     }
-    render("start");
+
+    if (copyBtn && summaryEl) {
+      copyBtn.addEventListener("click", async () => {
+        try {
+          await navigator.clipboard.writeText(summaryEl.textContent || "");
+          if (copyStatus) copyStatus.textContent = "Handoff note copied to clipboard.";
+        } catch (_err) {
+          if (copyStatus) copyStatus.textContent = "Copy ready: highlight the handoff note above.";
+        }
+      });
+    }
+
+    render(false);
   }
 
-  // 4. AI Output Verification Rubric & Diff Inspector (ai-verification-rubric.html)
+  // 4. AI Verification Rubric (neutral initial 0/6 state + Load Passing Preset + Clear All)
   const rubricBoxes = Array.from(document.querySelectorAll("[data-rubric-check]"));
   const rubricScoreEl = document.getElementById("rubric-score");
   const rubricNoteEl = document.getElementById("rubric-note");
+  const presetBtn = document.getElementById("rubric-preset");
+  const clearBtn = document.getElementById("rubric-clear");
+
   if (rubricBoxes.length && rubricScoreEl) {
     function updateRubric() {
       const checked = rubricBoxes.filter((b) => b.checked).length;
       const total = rubricBoxes.length;
       rubricScoreEl.textContent = `${checked} / ${total} Verification Gates Passed`;
       if (rubricNoteEl) {
-        rubricNoteEl.textContent =
-          checked === total
-            ? "APPROVED FOR LEARNER / PARTNER RELEASE: Every factual, tone, and evidence check passed."
-            : "HOLD FOR REVISION: Complete remaining verification checks before publishing or customer delivery.";
-        rubricNoteEl.className = checked === total ? "callout callout-teal" : "callout callout-amber";
+        if (checked === 0) {
+          rubricNoteEl.textContent =
+            "Interactive Readiness Scorer: Check each review gate above (or load a passing example) to simulate release sign-off.";
+          rubricNoteEl.className = "callout callout-neutral";
+        } else if (checked === total) {
+          rubricNoteEl.textContent =
+            "APPROVED FOR RELEASE: All 6 factual traceability, privacy, clarity, and spot-check gates passed.";
+          rubricNoteEl.className = "callout callout-teal";
+        } else {
+          rubricNoteEl.textContent =
+            `HOLD FOR REVISION (${total - checked} gate${total - checked === 1 ? "" : "s"} remaining): Resolve remaining checks before release.`;
+          rubricNoteEl.className = "callout callout-amber";
+        }
       }
     }
+
     rubricBoxes.forEach((box) => box.addEventListener("change", updateRubric));
-    updateRubric();
-  }
-
-  // 5. Webhook / API Triage Simulator (webhook-troubleshooting-job-aid.html)
-  const webhookBtns = Array.from(document.querySelectorAll("[data-webhook-case]"));
-  if (webhookBtns.length) {
-    const CASES = {
-      auth_401: {
-        title: "HTTP 401 Unauthorized - Scoped Token or Header Mismatch",
-        payload: 'POST /v1/webhooks/dispatch\nAuthorization: Bearer pk_live_***\n\nResponse: 401 {"error":"invalid_scope_or_header","expected":"Authorization: Bearer sk_..."}',
-        diagnosis: "1. Confirm environment match (test vs. live credentials).\n2. Verify required header syntax and active permission scopes.\n3. Rotate key only after testing read-only endpoint first.",
-        comms: "Customer Update Template: We isolated a credential scope mismatch on this webhook endpoint. No event data was lost. Updating the authorization token to an active secret key resolves the 401 response.",
-      },
-      schema_400: {
-        title: "HTTP 400 Bad Request - Date Format or Required JSON Field Missing",
-        payload: 'POST /v1/events/sync\n{"account_id":"acct_492","effective_date":"11/16/2026"}\n\nResponse: 400 {"error":"invalid_date_iso8601","field":"effective_date"}',
-        diagnosis: "1. Check required keys in schema documentation against captured payload.\n2. Normalize timestamps and dates to ISO-8601 (YYYY-MM-DD).\n3. Replay validated payload once schema validates cleanly.",
-        comms: "Customer Update Template: The sync rejected because effective_date arrived as MM/DD/YYYY instead of ISO-8601 (YYYY-MM-DD). Updating the upstream date mapping clears the 400 validation error.",
-      },
-      sig_mismatch: {
-        title: "Webhook Signature Verification Failed (Raw vs. Parsed Body)",
-        payload: 'X-Webhook-Signature: t=1794826292,v1=9f4a...\nMiddleware parsed JSON before HMAC computation.\n\nResponse: 400 {"error":"signature_verification_failed"}',
-        diagnosis: "1. Verify handler passes raw request bytes into signature check before JSON parsing.\n2. Confirm server clock skew is under tolerance window.\n3. Re-test with a fresh signed event rather than re-posting edited JSON.",
-        comms: "Customer Update Template: The payload arrived intact, but signature verification ran after body parsing reformatted whitespace. Verifying against the raw request body restores clean webhook acceptance.",
-      },
-    };
-    const titleEl = document.getElementById("wh-title");
-    const payloadEl = document.getElementById("wh-payload");
-    const diagEl = document.getElementById("wh-diagnosis");
-    const commsEl = document.getElementById("wh-comms");
-
-    function showCase(key, activeBtn) {
-      const data = CASES[key];
-      if (!data) return;
-      webhookBtns.forEach((b) => b.setAttribute("aria-selected", b === activeBtn ? "true" : "false"));
-      if (titleEl) titleEl.textContent = data.title;
-      if (payloadEl) payloadEl.textContent = data.payload;
-      if (diagEl) diagEl.textContent = data.diagnosis;
-      if (commsEl) commsEl.textContent = data.comms;
+    if (presetBtn) {
+      presetBtn.addEventListener("click", () => {
+        rubricBoxes.forEach((b) => { b.checked = true; });
+        updateRubric();
+      });
     }
-    webhookBtns.forEach((btn) => {
-      btn.addEventListener("click", () => showCase(btn.getAttribute("data-webhook-case"), btn));
-    });
-    showCase("auth_401", webhookBtns[0]);
+    if (clearBtn) {
+      clearBtn.addEventListener("click", () => {
+        rubricBoxes.forEach((b) => { b.checked = false; });
+        updateRubric();
+      });
+    }
+    updateRubric();
   }
 })();

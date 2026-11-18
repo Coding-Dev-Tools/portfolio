@@ -73,4 +73,29 @@ test("rejects malformed CSV headers and rows", () => {
     () => simulate(`${HEADER}\nEMP-1001,join,Al"ice,Finance,mgr-finance@example.test,2026-11-02,active`),
     /quote may only start at the beginning/,
   );
+  assert.throws(
+    () => simulate("employee_id,employee_id,action,display_name,department,manager_email,effective_date,employment_status\nEMP-1001,EMP-1001,join,A,Finance,m@example.test,2026-11-02,active"),
+    /Duplicate CSV header/,
+  );
+});
+
+test("rejects impossible calendar dates, non-.test manager emails, bad IDs, and blank display names", () => {
+  const result = simulate([
+    HEADER,
+    "BAD ID!,JOIN,,Finance,mgr@company.com,2026-02-30,ACTIVE",
+  ].join("\n"));
+
+  assert.equal(result.summary.blocked, 1);
+  const msg = result.events[0].errors.join(" | ");
+  assert.match(msg, /letters, numbers, or hyphens/);
+  assert.match(msg, /Display name is required/);
+  assert.match(msg, /reserved \.test domain/);
+  assert.match(msg, /real date in YYYY-MM-DD format/);
+});
+
+test("strips UTF-8 BOM and normalizes action and employment_status case", () => {
+  const bomInput = `\uFEFF${HEADER}\nEMP-1010,JOIN,Morgan Diaz,Engineering,mgr@example.test,2026-11-05,ACTIVE`;
+  const result = simulate(bomInput);
+  assert.equal(result.summary.awaitingReview, 1);
+  assert.equal(result.events[0].action, "join");
 });

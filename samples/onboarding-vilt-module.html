@@ -3,11 +3,21 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Remote Onboarding &amp; vILT Curriculum (ADDIE) | Joshua Williams Portfolio</title>
-  <meta name="description" content="Sample ADDIE instructional design blueprint, 45-minute vILT facilitator run-of-show, Loom and Scribe job aid reinforcement, and interactive knowledge check by Joshua Williams.">
+  <title>Remote Onboarding Curriculum &amp; Facilitator Kit | Joshua Williams Portfolio</title>
+  <meta name="description" content="Sample instructional design blueprint following ADDIE (Analyze, Design, Develop, Implement, Evaluate), a 45-minute live virtual training (vILT) run-of-show, 1-page visual job aid, and 3-question interactive quiz.">
+  <link rel="canonical" href="https://coding-dev-tools.github.io/portfolio/samples/onboarding-vilt-module.html">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Joshua Williams Portfolio">
+  <meta property="og:title" content="Remote Onboarding Curriculum &amp; Facilitator Kit | Joshua Williams Portfolio">
+  <meta property="og:description" content="Instructional design blueprint, 45-minute live virtual training run-of-show, 1-page job aid artifact, and interactive assessment.">
+  <meta property="og:url" content="https://coding-dev-tools.github.io/portfolio/samples/onboarding-vilt-module.html">
+  <meta name="twitter:card" content="summary">
   <link rel="stylesheet" href="../styles.css">
 </head>
 <body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+
   <header class="topbar">
     <div class="topbar-inner">
       <a class="brand" href="../index.html">
@@ -20,124 +30,152 @@
         <a href="./escalation-decision-tree.html">Decision Tree</a>
         <a href="./ai-verification-rubric.html">AI Eval Rubric</a>
         <a href="./webhook-troubleshooting-job-aid.html">Webhook Guide</a>
+        <a href="../demos/hris-identity/index.html">HRIS Simulator</a>
       </nav>
     </div>
   </header>
 
-  <main class="container">
+  <main class="container" id="main-content" tabindex="-1">
     <a class="breadcrumb" href="../index.html?focus=lnd">&larr; Back to Learning &amp; Enablement Portfolio</a>
 
-    <section class="hero">
-      <span class="eyebrow">Learning Design Work Sample | ADDIE + vILT Facilitation + Microlearning</span>
-      <h1>Remote Onboarding Curriculum: Accurate Record Handoffs &amp; AI Draft Review</h1>
+    <section class="hero" aria-labelledby="vilt-hero-title">
+      <span class="eyebrow">Learning Design Sample | ADDIE Blueprint, vILT Guide &amp; Job Aid</span>
+      <h1 id="vilt-hero-title">Remote Onboarding Curriculum: Accurate Record Handoffs &amp; AI Draft Review</h1>
       <p class="hero-subtitle">
-        A public instructional design sample modeled on how I train distributed frontline specialists: combining clear business outcomes, structured 45-minute live virtual facilitation (vILT), Loom and Scribe visual job aids, and measurable post-session validation.
+        A public instructional design sample modeling how I structure training for distributed teams using ADDIE (Analyze, Design, Develop, Implement, Evaluate), live virtual instructor-led training (vILT), Loom video walkthroughs, and Scribe (step-by-step screenshot guide) job aids.
       </p>
       <div class="callout callout-teal">
-        <strong>Design Context (Non-Proprietary Sample):</strong> Built specifically for remote support, member-services, and operations teams using CRM/ticketing tools alongside generative AI assistants (Claude / Gemini). Zero confidential employer data is included.
+        <strong>Sample Scope Notice:</strong> Authored independently for portfolio review using generic customer support and operations scenarios. Zero confidential Carenet Health or client records are included.
       </div>
     </section>
 
     <section class="panel" aria-labelledby="addie-heading">
       <h2 id="addie-heading">1. ADDIE Instructional Design Architecture</h2>
-      <p class="section-lead">Click each ADDIE phase to inspect design decisions, SME collaboration checkpoints, and selected modalities.</p>
+      <p class="section-lead">Use tabs or Left/Right arrow keys to inspect each ADDIE phase, subject-matter expert (SME) review gates, and selected learning modalities.</p>
 
-      <div class="tab-strip" role="tablist" data-tablist aria-label="ADDIE Framework Phases">
-        <button class="tab-btn" type="button" role="tab" aria-selected="true" aria-controls="addie-a">A: Analyze</button>
-        <button class="tab-btn" type="button" role="tab" aria-selected="false" aria-controls="addie-d1">D: Design</button>
-        <button class="tab-btn" type="button" role="tab" aria-selected="false" aria-controls="addie-d2">D: Develop</button>
-        <button class="tab-btn" type="button" role="tab" aria-selected="false" aria-controls="addie-i">I: Implement (vILT)</button>
-        <button class="tab-btn" type="button" role="tab" aria-selected="false" aria-controls="addie-e">E: Evaluate</button>
+      <div class="tab-strip" role="tablist" data-tablist aria-label="ADDIE Instructional Design Phases">
+        <button id="tab-addie-a" class="tab-btn" type="button" role="tab" aria-selected="true" aria-controls="addie-a" tabindex="0">A: Analyze</button>
+        <button id="tab-addie-d1" class="tab-btn" type="button" role="tab" aria-selected="false" aria-controls="addie-d1" tabindex="-1">D: Design</button>
+        <button id="tab-addie-d2" class="tab-btn" type="button" role="tab" aria-selected="false" aria-controls="addie-d2" tabindex="-1">D: Develop</button>
+        <button id="tab-addie-i" class="tab-btn" type="button" role="tab" aria-selected="false" aria-controls="addie-i" tabindex="-1">I: Implement (vILT)</button>
+        <button id="tab-addie-e" class="tab-btn" type="button" role="tab" aria-selected="false" aria-controls="addie-e" tabindex="-1">E: Evaluate</button>
       </div>
 
-      <div id="addie-a" role="tabpanel">
-        <h3>Audience, Gap Analysis &amp; Performance Goal</h3>
+      <div id="addie-a" role="tabpanel" aria-labelledby="tab-addie-a" tabindex="0">
+        <h3>Audience, Performance Gap &amp; Learning Objective</h3>
         <ul class="role-list">
-          <li><strong>Target Learners:</strong> Distributed remote frontline specialists and points of contact working live escalations across CRM, ticketing, and external partner workflows.</li>
-          <li><strong>Observed Gap:</strong> Escalation handoffs stall when specialists pass unverified symptoms or unedited AI summaries downstream without checking source records first.</li>
-          <li><strong>Learning Objective:</strong> Given an ambiguous escalation or AI-drafted note, learners apply a 4-point source-of-truth check, select the correct decision-tree route, and complete a confirmed warm handoff.</li>
+          <li><strong>Target Learners:</strong> Distributed remote specialists and points of contact routing live partner and customer escalations in customer relationship management (CRM) and ticketing systems.</li>
+          <li><strong>Observed Bottleneck:</strong> Escalations bounce back between teams when specialists pass unverified symptoms or unedited AI summaries without checking source-of-truth dates and owner status first.</li>
+          <li><strong>Measurable Objective:</strong> Given an ambiguous escalation or AI-drafted summary, learners apply a 4-step verification check, choose the matching triage route, and complete a confirmed warm handoff.</li>
         </ul>
       </div>
 
-      <div id="addie-d1" role="tabpanel" hidden>
-        <h3>Blended Modality Selection (Why Each Format Fits)</h3>
+      <div id="addie-d1" role="tabpanel" aria-labelledby="tab-addie-d1" tabindex="0" hidden>
+        <h3>Blended Modality Architecture</h3>
         <ul class="role-list">
-          <li><strong>Pre-Work (10 min async):</strong> Self-paced 1-page Scribe step-by-step job aid + short Loom video modeling one real record check so live class time focuses on practice instead of lecture.</li>
-          <li><strong>vILT Workshop (45 min live):</strong> Facilitated group practice on edge cases, live screen share navigation, and structured peer critique of AI-drafted summaries.</li>
-          <li><strong>On-the-Job Reinforcement:</strong> Clickable decision tree pinned in the Notion intranet beside existing ticket templates.</li>
+          <li><strong>Pre-Work (8 min async):</strong> Self-paced 1-page Scribe step-by-step screenshot guide paired with a 90-second Loom video walkthrough so live class focuses on active practice instead of passive lecture.</li>
+          <li><strong>Live Virtual Session (45 min vILT):</strong> Guided sandbox navigation, AI-draft critique exercise, and live warm-handoff roleplay with immediate facilitator coaching.</li>
+          <li><strong>On-the-Job Reinforcement:</strong> Interactive <a href="./escalation-decision-tree.html">Escalation Triage Decision Tree</a> linked directly inside Notion onboarding templates.</li>
         </ul>
       </div>
 
-      <div id="addie-d2" role="tabpanel" hidden>
-        <h3>Content Development &amp; AI Output Validation</h3>
+      <div id="addie-d2" role="tabpanel" aria-labelledby="tab-addie-d2" tabindex="0" hidden>
+        <h3>Content Development &amp; AI Draft Validation</h3>
         <ul class="role-list">
-          <li><strong>AI Drafting Workflow:</strong> Use Claude or Gemini to draft alternative scenario variants and knowledge-check distractors quickly from SME bullet points.</li>
-          <li><strong>Human Validation Gate:</strong> Every AI-generated draft undergoes a mandatory accuracy, tone, inclusivity, and policy check against primary SOPs before SME sign-off (see <a href="./ai-verification-rubric.html">AI Eval Rubric</a>).</li>
-          <li><strong>Accessibility &amp; Clarity:</strong> Short action-first headings, plain language, captioned Loom clips, and high-contrast visual job aids for rapid scanning during live interactions.</li>
+          <li><strong>Drafting Workflow:</strong> Draft alternative practice scenarios and quiz distractors cleanly from SME bullet points using generative AI assistants.</li>
+          <li><strong>Human Verification Gate:</strong> Every AI-assisted draft passes a mandatory accuracy, plain-language, inclusivity, and policy check against primary standard operating procedures (SOPs) before release (see <a href="./ai-verification-rubric.html">AI Eval Rubric</a>).</li>
+          <li><strong>Accessibility &amp; Clarity:</strong> Captioned video clips, scannable action headers, and non-jargon steps built for quick scanning under time pressure.</li>
         </ul>
       </div>
 
-      <div id="addie-i" role="tabpanel" hidden>
-        <h3>Facilitation &amp; Distributed Delivery Plan</h3>
+      <div id="addie-i" role="tabpanel" aria-labelledby="tab-addie-i" tabindex="0" hidden>
+        <h3>Distributed Remote Facilitation Plan</h3>
         <ul class="role-list">
-          <li><strong>Cohort Size:</strong> 8 to 15 remote learners via video session with active chat prompts every 5 to 7 minutes to keep engagement high.</li>
-          <li><strong>Trainer Toolkit:</strong> Facilitator run-of-show, timer cues, cold-call-free volunteer prompts, and backup async Loom recording + quiz for scheduling conflicts.</li>
-          <li><strong>SME Co-Sign:</strong> Operations team lead joins last 10 minutes of pilot cohort to capture edge cases needing SOP updates.</li>
+          <li><strong>Cohort Format:</strong> Cohorts of 8 to 15 remote participants using structured chat prompts every 5 to 7 minutes to keep engagement balanced across time zones.</li>
+          <li><strong>Facilitator Readiness:</strong> Timed cue sheet, screen-share sandbox checklist, plus async Loom + interactive quiz path for learners unable to attend live.</li>
+          <li><strong>SME Co-Facilitation:</strong> Operations lead joins the final 10 minutes of pilot sessions to review live edge cases requiring SOP clarification.</li>
         </ul>
       </div>
 
-      <div id="addie-e" role="tabpanel" hidden>
-        <h3>Kirkpatrick-Aligned Evaluation Plan</h3>
+      <div id="addie-e" role="tabpanel" aria-labelledby="tab-addie-e" tabindex="0" hidden>
+        <h3>Four-Level Evaluation Plan</h3>
         <ul class="role-list">
-          <li><strong>Level 1 (Reaction):</strong> 2-question end-of-session pulse check on clarity and confidence applying the decision tree live.</li>
-          <li><strong>Level 2 (Learning):</strong> Scenario knowledge check integrated at the bottom of this module (requiring accurate identification of escalation vs. self-correction steps).</li>
-          <li><strong>Level 3 &amp; 4 (Transfer &amp; Quality):</strong> QA review of live ticket handoff notes across weeks 1 and 2 post-training to confirm missing-field and back-and-forth clarifications trend downward.</li>
+          <li><strong>Reaction (Session Close):</strong> 2-question end-of-workshop check on job-aid clarity and confidence applying the decision tree on live calls.</li>
+          <li><strong>Learning Check (Immediate):</strong> Scenario quiz integrated in Section 4 below verifying judgment on unverified AI claims and warm handoffs.</li>
+          <li><strong>Behavior &amp; Quality Transfer (Weeks 1 - 2):</strong> Peer and QA spot-checks of live escalation tickets to verify missing intake fields decline and receiving owners are logged consistently.</li>
         </ul>
       </div>
     </section>
 
+    <section class="panel" aria-labelledby="artifact-heading">
+      <h2 id="artifact-heading">2. Tangible Learning Artifact Preview (Job Aid &amp; Micro-Video Script)</h2>
+      <p class="section-lead">Example printable quick-reference card and 90-second video script handed directly to learners alongside the session.</p>
+
+      <div class="diff-grid mt-md">
+        <div class="artifact-sheet">
+          <h3 class="mt-0">Printable 1-Page Job Aid: Before You Escalate Checklist</h3>
+          <ol class="role-list">
+            <li><strong>Confirm Source Record:</strong> Check primary portal/billing status and effective date match what the caller reported.</li>
+            <li><strong>Verify Any AI Summary:</strong> Delete invented percentages or service level agreement (SLA) claims not directly present in source notes.</li>
+            <li><strong>Package Reproduction Context:</strong> Include account ID (redacted where required), timestamp, expected vs. actual state, and impact.</li>
+            <li><strong>Secure Live Warm Handoff:</strong> Confirm named receiving owner directly and log owner + timestamp before updating waiting stakeholders.</li>
+          </ol>
+        </div>
+
+        <div class="info-panel">
+          <h3 class="mt-0">90-Second Loom / Scribe Walkthrough Script</h3>
+          <ul class="role-list">
+            <li><span class="mono">0:00 - 0:20</span> Show broken ticket that bounced twice because the specialist pasted symptoms without verifying the effective date.</li>
+            <li><span class="mono">0:20 - 0:55</span> Click step-by-step through Scribe capture points 1 to 3 comparing portal status against CRM notes and trimming an unsupported AI claim.</li>
+            <li><span class="mono">0:55 - 1:30</span> Model logging named receiving owner + timestamp in the ticket, then direct learners to Question 1 in the quiz below.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
     <section class="panel" aria-labelledby="vilt-heading">
-      <h2 id="vilt-heading">2. Live Virtual Training (vILT) Facilitator Run-of-Show (45 Minutes)</h2>
-      <div class="table-wrap" style="margin-top: 12px;">
-        <table>
+      <h2 id="vilt-heading">3. Live Virtual Training (vILT) Facilitator Run-of-Show (45 Minutes)</h2>
+      <div class="table-wrap mt-sm" tabindex="0" role="region" aria-label="45 minute live virtual training facilitator schedule">
+        <table class="stack-table">
+          <caption>Session timing, instructional modality, and facilitator cue guide.</caption>
           <thead>
             <tr>
-              <th>Time</th>
-              <th>Segment</th>
-              <th>Modality / Tool</th>
-              <th>Facilitator Cue &amp; Learner Action</th>
+              <th scope="col">Time</th>
+              <th scope="col">Segment</th>
+              <th scope="col">Modality / Tool</th>
+              <th scope="col">Facilitator Cue &amp; Learner Action</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td class="mono">00:00 - 05:00</td>
-              <td>Opening Hook &amp; Outcomes</td>
-              <td>vILT + Chat Waterfall</td>
-              <td>Ask: "What makes an escalated ticket bounce back to you?" Synthesize replies into the single source-of-truth checklist.</td>
+              <td class="mono" data-label="Time">00:00 - 05:00</td>
+              <td data-label="Segment">Opening Hook &amp; Outcomes</td>
+              <td data-label="Modality / Tool">vILT + Chat Waterfall</td>
+              <td data-label="Facilitator Cue">Ask: "What makes an escalated ticket bounce back?" Map learner answers onto the 4-step checklist.</td>
             </tr>
             <tr>
-              <td class="mono">05:00 - 15:00</td>
-              <td>Model the Standard</td>
-              <td>Live Screen Share + Scribe Job Aid</td>
-              <td>Walk through one conflicting-record case live in sandbox/reference view. Explicitly point out where to stop and verify dates/owners.</td>
+              <td class="mono" data-label="Time">05:00 - 15:00</td>
+              <td data-label="Segment">Model the Standard</td>
+              <td data-label="Modality / Tool">Screen Share + Scribe Guide</td>
+              <td data-label="Facilitator Cue">Walk through one conflicting-record sample live in sandbox view, pausing explicitly at date and owner verification steps.</td>
             </tr>
             <tr>
-              <td class="mono">15:00 - 28:00</td>
-              <td>Guided Case Practice + AI Check</td>
-              <td>Breakout / Poll + AI Diff View</td>
-              <td>Present an AI-drafted summary containing a plausible but unverified claim. Learners spot the defect and rewrite using primary facts.</td>
+              <td class="mono" data-label="Time">15:00 - 28:00</td>
+              <td data-label="Segment">Guided Case Practice + AI Check</td>
+              <td data-label="Modality / Tool">Breakout + AI Diff View</td>
+              <td data-label="Facilitator Cue">Share an AI-drafted note containing an unsupported metric. Learners flag the gap and rewrite using source facts.</td>
             </tr>
             <tr>
-              <td class="mono">28:00 - 40:00</td>
-              <td>Warm-Handoff Roleplay</td>
-              <td>Live Audio / Chat Handoff</td>
-              <td>Two volunteers run a 2-minute live warm handoff: confirm receiving owner by name, state verified facts, and record closure owner.</td>
+              <td class="mono" data-label="Time">28:00 - 40:00</td>
+              <td data-label="Segment">Warm-Handoff Roleplay</td>
+              <td data-label="Modality / Tool">Live Audio / Chat Practice</td>
+              <td data-label="Facilitator Cue">Pairs practice a 2-minute live warm handoff: confirm receiving owner by name, state verified facts, log closure step.</td>
             </tr>
             <tr>
-              <td class="mono">40:00 - 45:00</td>
-              <td>Action Plan &amp; Knowledge Check</td>
-              <td>Intranet Link + Quiz</td>
-              <td>Pin Notion job aid + decision tree; learners complete the interactive knowledge check below and submit pulse feedback before closing.</td>
+              <td class="mono" data-label="Time">40:00 - 45:00</td>
+              <td data-label="Segment">Action Plan &amp; Knowledge Check</td>
+              <td data-label="Modality / Tool">Notion Job Aid + Quiz</td>
+              <td data-label="Facilitator Cue">Bookmark Notion checklist + decision tree; learners complete the interactive 3-question check below before wrap-up.</td>
             </tr>
           </tbody>
         </table>
@@ -145,40 +183,65 @@
     </section>
 
     <section class="panel" aria-labelledby="quiz-heading">
-      <h2 id="quiz-heading">3. Interactive Learner Knowledge Check</h2>
-      <p class="section-lead">Test this sample assessment directly. Click an answer choice to view immediate learner feedback and rationale.</p>
-
-      <div style="margin-top: 18px;" data-quiz-question>
-        <p><strong>Question 1:</strong> You use an AI assistant to summarize a 12-message ticket before escalating to a partner lead. The draft inserts a fast SLA figure that does not appear anywhere in the thread. What do you do first?</p>
-        <button class="quiz-option" type="button" data-correct="false" data-rationale="Not quite. Passing unverified numbers downstream breaks trust with partner teams and fails QA review.">
-          Send the draft as written so escalation happens faster.
-        </button>
-        <button class="quiz-option" type="button" data-correct="true" data-rationale="Correct. AI drafts accelerate formatting, but human reviewers must verify every factual claim and remove unverified numbers against primary records before sending.">
-          Remove the unsupported claim, verify exact dates and facts against the source record, and send the verified summary.
-        </button>
-        <button class="quiz-option" type="button" data-correct="false" data-rationale="Not quite. You should not avoid useful AI drafting tools altogether; instead, apply source-of-truth validation gates before release.">
-          Stop drafting notes completely and route only raw screenshots with no context.
-        </button>
-        <div data-quiz-feedback></div>
+      <div class="section-header">
+        <div>
+          <h2 id="quiz-heading">4. Interactive Learner Knowledge Check</h2>
+          <p class="section-lead">Test this 3-question scenario assessment. Click an option to inspect immediate explanatory feedback.</p>
+        </div>
+        <div class="hero-actions mt-0">
+          <strong id="quiz-score" class="text-teal" aria-live="polite">Score: 0 / 3 Correct</strong>
+          <button id="quiz-reset" class="btn btn-secondary" type="button">Reset Quiz</button>
+        </div>
       </div>
 
-      <div style="margin-top: 22px;" data-quiz-question>
-        <p><strong>Question 2:</strong> When handling an urgent warm handoff to an external or on-call contact, when is your responsibility complete?</p>
-        <button class="quiz-option" type="button" data-correct="false" data-rationale="Not quite. Posting in a general channel without confirmed ownership risks stalled resolution and duplicate outreach.">
-          Immediately after posting a note into a shared queue without confirmation.
+      <fieldset class="quiz-fieldset" data-quiz-question>
+        <legend>Question 1: An AI assistant summarizes a 12-message ticket before escalation and inserts a percentage metric not present anywhere in the thread. What do you do first?</legend>
+        <button class="quiz-option" type="button" data-correct="false" data-rationale="Passing unverified numbers downstream erodes stakeholder trust and fails quality audits.">
+          Send the AI summary as written so the ticket routes faster.
         </button>
-        <button class="quiz-option" type="button" data-correct="true" data-rationale="Correct. Warm-handoff discipline requires direct owner confirmation plus recording owner name, timestamp, and affected stakeholder notification in the system of record.">
-          Once the receiving owner explicitly confirms receipt and ownership is logged in the CRM/ticketing record.
+        <button class="quiz-option" type="button" data-correct="true" data-rationale="AI drafts speed up formatting, but reviewers must verify every factual claim against source records and strip unsupported numbers before sending.">
+          Delete the unsupported metric, verify exact dates and states against the primary record, and send the verified summary.
         </button>
-        <div data-quiz-feedback></div>
-      </div>
+        <button class="quiz-option" type="button" data-correct="false" data-rationale="Avoid abandoning structured summaries altogether; apply source-of-truth verification gates cleanly before release.">
+          Abandon summarizing completely and forward raw unannotated screenshots with no context.
+        </button>
+        <div data-quiz-feedback aria-live="polite"></div>
+      </fieldset>
+
+      <fieldset class="quiz-fieldset" data-quiz-question>
+        <legend>Question 2: When executing an urgent warm handoff to an external partner or on-call lead, when is your responsibility complete?</legend>
+        <button class="quiz-option" type="button" data-correct="false" data-rationale="Posting into a shared queue without confirmed ownership risks stalled resolution and duplicate follow-ups.">
+          As soon as a note is dropped into a shared channel without confirmation.
+        </button>
+        <button class="quiz-option" type="button" data-correct="true" data-rationale="Warm-handoff accountability requires explicit live/written owner acceptance plus logging owner name and timestamp in CRM.">
+          Once the receiving owner explicitly confirms ownership and the handoff is logged in the system of record.
+        </button>
+        <button class="quiz-option" type="button" data-correct="false" data-rationale="Telling the caller to follow up later leaves the underlying blocker unresolved.">
+          When the shift ends, leaving the next shift to check whether anyone answered.
+        </button>
+        <div data-quiz-feedback aria-live="polite"></div>
+      </fieldset>
+
+      <fieldset class="quiz-fieldset" data-quiz-question>
+        <legend>Question 3: Three specialists make the exact same portal navigation mistake within five days. What is the best enablement response?</legend>
+        <button class="quiz-option" type="button" data-correct="false" data-rationale="Private one-off corrections leave the rest of the remote team exposed to the same workflow gap.">
+          Correct only those three tickets quietly without updating shared documentation.
+        </button>
+        <button class="quiz-option" type="button" data-correct="false" data-rationale="Scheduling a mandatory 60-minute all-hands lecture disrupts queue coverage when a focused visual update solves the point-of-need confusion.">
+          Schedule a mandatory 60-minute all-hands lecture re-covering the entire onboarding program.
+        </button>
+        <button class="quiz-option" type="button" data-correct="true" data-rationale="Updating the pinned 1-page visual Scribe guide and sharing a 90-second walkthrough directly fixes point-of-need confusion across the whole team.">
+          Update the 1-page visual job aid, post a short 90-second video clip highlighting the step, and spot-check the next cohort of tickets.
+        </button>
+        <div data-quiz-feedback aria-live="polite"></div>
+      </fieldset>
     </section>
-
-    <footer class="footer">
-      <span><a href="../index.html">&larr; Back to Joshua Williams Portfolio</a></span>
-      <span><a href="./ai-verification-rubric.html">Next Sample: AI Output Verification Rubric &rarr;</a></span>
-    </footer>
   </main>
+
+  <footer class="footer">
+    <span><a href="../index.html">&larr; Portfolio Home</a></span>
+    <span><a href="./escalation-decision-tree.html">Next Sample: Escalation Decision Tree &rarr;</a></span>
+  </footer>
 
   <script src="./samples.js"></script>
 </body>
