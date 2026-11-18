@@ -895,6 +895,7 @@ pre {
     display: none;
   }
   .stack-table,
+  .stack-table caption,
   .stack-table tbody,
   .stack-table tr,
   .stack-table td {
@@ -912,7 +913,7 @@ pre {
   .stack-table td.mono {
     white-space: normal;
   }
-  .stack-table td::before {
+  .stack-table td[data-label]::before {
     content: attr(data-label) ": ";
     font-weight: 700;
     color: var(--ink);

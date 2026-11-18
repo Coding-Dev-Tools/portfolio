@@ -69,7 +69,7 @@ EMP-1003,leave,Casey Rivera,Engineering,mgr-eng@example.test,2026-10-13,terminat
         <h2 id="output-heading">Review Recommendations</h2>
         <p id="status" class="fw-600 mt-sm" aria-live="polite">Ready to simulate the sample rows.</p>
         <div class="table-wrap mt-sm" tabindex="0" role="region" aria-label="Synthetic HRIS validation recommendations">
-          <table>
+          <table class="stack-table">
             <caption>Human-review recommendations generated client-side with zero external side effects.</caption>
             <thead>
               <tr>
@@ -106,10 +106,11 @@ EMP-1003,leave,Casey Rivera,Engineering,mgr-eng@example.test,2026-10-13,terminat
       const jsonOutput = document.getElementById("json-output");
       const sample = input.value;
 
-      function addCell(row, value, className) {
+      function addCell(row, value, className, label) {
         const cell = document.createElement("td");
         cell.textContent = value;
         if (className) cell.className = className;
+        if (label) cell.setAttribute("data-label", label);
         row.appendChild(cell);
       }
 
@@ -117,11 +118,11 @@ EMP-1003,leave,Casey Rivera,Engineering,mgr-eng@example.test,2026-10-13,terminat
         resultsBody.replaceChildren();
         for (const event of result.events) {
           const row = document.createElement("tr");
-          addCell(row, event.employee_id || "-");
-          addCell(row, event.action || "-");
+          addCell(row, event.employee_id || "-", "", "Employee");
+          addCell(row, event.action || "-", "", "Event");
           const reviewStatus = event.decision === "blocked" ? "Blocked" : "Review recommended";
-          addCell(row, reviewStatus, event.decision === "blocked" ? "blocked" : "pending");
-          addCell(row, event.review_summary || event.errors.join("; "));
+          addCell(row, reviewStatus, event.decision === "blocked" ? "blocked" : "pending", "Review status");
+          addCell(row, event.review_summary || event.errors.join("; "), "", "Recommendation");
           resultsBody.appendChild(row);
         }
         const s = result.summary;
