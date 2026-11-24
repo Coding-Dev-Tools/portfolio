@@ -26,26 +26,87 @@
     });
   }
 
+  // Inline 30-Second Proof Workbench on homepage
+  const homeTablist = document.querySelector("[data-home-tablist]");
+  if (homeTablist) {
+    const tabs = Array.from(homeTablist.querySelectorAll('[role="tab"]'));
+    function selectHomeTab(targetTab, focusTab = false) {
+      tabs.forEach((tab) => {
+        const active = tab === targetTab;
+        tab.setAttribute("aria-selected", active ? "true" : "false");
+        tab.setAttribute("tabindex", active ? "0" : "-1");
+        const panel = document.getElementById(tab.getAttribute("aria-controls") || "");
+        if (panel) panel.hidden = !active;
+      });
+      if (focusTab) targetTab.focus();
+    }
+    tabs.forEach((tab, idx) => {
+      tab.addEventListener("click", () => selectHomeTab(tab, false));
+      tab.addEventListener("keydown", (event) => {
+        let next = null;
+        if (event.key === "ArrowRight") next = (idx + 1) % tabs.length;
+        else if (event.key === "ArrowLeft") next = (idx - 1 + tabs.length) % tabs.length;
+        else if (event.key === "Home") next = 0;
+        else if (event.key === "End") next = tabs.length - 1;
+        if (next !== null) {
+          event.preventDefault();
+          selectHomeTab(tabs[next], true);
+        }
+      });
+    });
+  }
+
+  const wbHcOut = document.getElementById("wb-hc-output");
+  const WB_HC_NOTES = {
+    elig:
+      "[SYNTHETIC CASE - ELIGIBILITY QA] Primary payer portal verified active effective 2026-11-01 (CRM cache showed stale 2026-10-31 term). Confirmed coverage window for clinic coordinator, logged verification timestamp in CRM, and flagged sync lag for Ops review.",
+    afterhours:
+      "[SYNTHETIC CASE - AFTER-HOURS WARM HANDOFF] Verified active on-call roster for Clinic Site #204. Primary on-call clinician confirmed callback live at 21:14 ET; logged named receiving owner, timestamp, and written facility confirmation.",
+  };
+  document.querySelectorAll("[data-wb-hc]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const key = btn.getAttribute("data-wb-hc");
+      if (wbHcOut && WB_HC_NOTES[key]) wbHcOut.textContent = WB_HC_NOTES[key];
+    });
+  });
+
+  const wbRunCheck = document.getElementById("wb-run-check");
+  const wbTechOut = document.getElementById("wb-tech-output");
+  if (wbRunCheck && wbTechOut) {
+    wbRunCheck.addEventListener("click", () => {
+      wbTechOut.textContent =
+        "BLOCKED (2 integration defects caught prior to production sync):\n" +
+        "1. [HTTP 400 Schema] effective_date='11/16/2026' rejected; normalize to ISO-8601 (2026-11-16) in Zapier/Python formatter.\n" +
+        "2. [Stripe Webhook 400] Middleware ran JSON.parse() before HMAC-SHA256 verification; pass raw request bytes to constructEvent().";
+    });
+  }
+
   if (!buttons.length || !cards.length) return;
 
   const FOCUS_MAP = {
     all: "all",
+    healthcare: "healthcare",
+    payer: "healthcare",
     lnd: "lnd",
     learning: "lnd",
     enablement: "lnd",
     ops: "ops",
     operations: "ops",
+    qa: "ops",
     cs: "cs",
     success: "cs",
+    support: "cs",
     data: "data",
     ai: "data",
+    web: "data",
   };
 
   const FOCUS_NOTES = {
-    lnd: "Learning & Enablement Focus: Highlights my remote onboarding curriculum sample (Analyze-Design-Develop-Implement-Evaluate), live virtual facilitation guide, 1-page Scribe-style job aid, decision tree, and AI draft review rubric.",
-    ops: "Operations & Escalations Focus: Highlights source-of-truth record checks, warm-handoff accountability across up to 80 remote specialists and 900+ clinical sites, and preventive SOP tooling.",
-    cs: "Customer Success & SaaS Onboarding Focus: Highlights live SaaS user documentation (Snippet Manager Pro & Engraphis), self-service API/webhook troubleshooting, Stripe billing workflows, and client follow-through.",
-    data: "AI Workflows & QA Focus: Highlights factual claim gating, Python verification checks, anomaly isolation across Stripe/CRM records, and human-in-the-loop quality review.",
+    healthcare: "Healthcare Operations Lens: Highlights remote supervision of up to 80 specialists across 900+ clinical sites and 200+ CenterWell locations, Medicaid/payer eligibility QA, after-hours clinical routing, and Epic/Jira/CRM SOPs.",
+    lnd: "Enablement & L&D Lens: Highlights the Healthcare QA calibration matrix, ADDIE onboarding curriculum, 45-minute vILT run-of-show, 1-page job aid, decision tree, and AI content review gate.",
+    ops: "Escalations & QA Lens: Highlights primary-source record verification, confirmed warm handoffs, live pre-release QA gates, and unit-tested CSV access-rule validation.",
+    cs: "Tech Support & SaaS Lens: Highlights self-service onboarding, REST API/webhook and Stripe billing troubleshooting, 11,800+ member user enablement, and clear customer update templates.",
+    data: "Automation & AI QA Lens: Highlights live browser QA gating, Python verification patterns, Zapier/REST webhook diagnostics, and client-side CSV schema validation.",
   };
 
   function applyFilter(key, updateQuery = true) {
@@ -66,7 +127,6 @@
     });
 
     if (grid) {
-      // Switch to 2 columns when 2 or 4 cards are shown so grids stay balanced without orphan single-card rows.
       grid.classList.toggle("card-grid-2", visibleCount === 2 || visibleCount === 4);
     }
 

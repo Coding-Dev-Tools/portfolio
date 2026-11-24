@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Healthcare &amp; Payer Operations QA Playbook | Joshua Williams Portfolio</title>
+  <meta name="description" content="Synthetic healthcare operations and payer escalation QA playbook covering Medicaid eligibility mismatches, after-hours clinical warm handoffs, and authorization documentation audits.">
+  <link rel="canonical" href="https://coding-dev-tools.github.io/portfolio/samples/healthcare-escalation-qa.html">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Joshua Williams Portfolio">
+  <meta property="og:title" content="Healthcare &amp; Payer Operations QA Playbook | Joshua Williams Portfolio">
+  <meta property="og:description" content="Interactive healthcare escalation QA simulator for eligibility checks, after-hours clinical routing, and documentation compliance.">
+  <meta property="og:url" content="https://coding-dev-tools.github.io/portfolio/samples/healthcare-escalation-qa.html">
+  <meta property="og:image" content="https://coding-dev-tools.github.io/portfolio/assets/og-card.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Joshua Williams Healthcare Operations, Enablement and Technical Support Portfolio">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://coding-dev-tools.github.io/portfolio/assets/og-card.png">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="../index.html">
+        <span class="brand-mark" aria-hidden="true">JW</span>
+        <span>Joshua Williams</span>
+      </a>
+      <nav class="nav-links" aria-label="Sample navigation">
+        <a href="../index.html">Portfolio Home</a>
+        <a href="./healthcare-escalation-qa.html" aria-current="page">Healthcare QA</a>
+        <a href="./onboarding-vilt-module.html">L&amp;D ADDIE Module</a>
+        <a href="./escalation-decision-tree.html">Decision Tree</a>
+        <a href="./ai-verification-rubric.html">AI Eval Rubric</a>
+        <a href="./webhook-troubleshooting-job-aid.html">Webhook Guide</a>
+        <a href="../demos/hris-identity/index.html">HRIS Simulator</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container" id="main-content" tabindex="-1">
+    <a class="breadcrumb" href="../index.html?focus=healthcare">&larr; Back to Healthcare Operations Portfolio</a>
+
+    <section class="hero hero-dark" aria-labelledby="hc-hero-title">
+      <span class="eyebrow">Healthcare &amp; Payer Operations | Synthetic QA Playbook</span>
+      <h1 id="hc-hero-title">Healthcare Payer Escalation &amp; Clinical Routing QA Playbook</h1>
+      <p class="hero-subtitle">
+        Structured around public healthcare operations standards and shaped by three years supervising remote clinical and payer support (up to 80 specialists across 900+ sites and 200+ after-hours locations) plus six years of Medicaid care documentation. All scenarios below use 100% synthetic sample cases with zero confidential employer or patient records.
+      </p>
+    </section>
+
+    <section class="panel" aria-labelledby="hc-sim-heading">
+      <h2 id="hc-sim-heading">1. Interactive Healthcare Operations Triage Scenarios</h2>
+      <p class="section-lead">Select any scenario using tabs or Left/Right arrow keys to inspect intake defects, required primary-source verifications, and copy-ready escalation notes.</p>
+
+      <div id="hc-tablist" class="tab-strip" role="tablist" data-tablist aria-label="Healthcare Operations QA Scenarios">
+        <button id="tab-hc-elig" class="tab-btn" type="button" role="tab" data-hc-case="eligibility_date" aria-controls="hc-panel" aria-selected="true" tabindex="0">Medicaid Eligibility Mismatch</button>
+        <button id="tab-hc-afterhours" class="tab-btn" type="button" role="tab" data-hc-case="afterhours_handoff" aria-controls="hc-panel" aria-selected="false" tabindex="-1">After-Hours Clinical Warm Handoff</button>
+        <button id="tab-hc-auth" class="tab-btn" type="button" role="tab" data-hc-case="auth_audit" aria-controls="hc-panel" aria-selected="false" tabindex="-1">Authorization Documentation QA</button>
+      </div>
+
+      <div id="hc-panel" role="tabpanel" aria-labelledby="tab-hc-elig" aria-live="polite" tabindex="0">
+        <h3 id="hc-title" class="text-teal mt-sm">Scenario</h3>
+        <div class="diff-grid mt-sm">
+          <div class="diff-box bad">
+            <h4 class="text-danger mt-0">Common Frontline Mistake (Bounced Case)</h4>
+            <p id="hc-mistake"></p>
+          </div>
+          <div class="diff-box good">
+            <h4 class="text-ok mt-0">Verified Supervisor Standard (Zero Rework)</h4>
+            <p id="hc-standard"></p>
+          </div>
+        </div>
+
+        <p class="fw-600 mt-md">Required Primary-Source Verification Steps</p>
+        <ol id="hc-steps" class="resolution-steps"></ol>
+
+        <div class="section-header mt-md">
+          <h4 class="mt-0">Copy-Ready Escalation / QA Handoff Note</h4>
+          <button id="hc-copy-note" class="btn btn-secondary" type="button">Copy Handoff Note</button>
+        </div>
+        <pre id="hc-note"></pre>
+        <p id="hc-copy-status" class="meta-note mt-sm" aria-live="polite"></p>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="hc-cal-heading">
+      <h2 id="hc-cal-heading">2. Supervisor QA Calibration Matrix (Coaching vs. System Fix)</h2>
+      <p class="section-lead">How remote operations leads separate one-off coaching moments from systemic SOP, portal, or payer-rule updates.</p>
+      <div class="table-wrap mt-sm" tabindex="0" role="region" aria-label="Healthcare QA calibration framework">
+        <table class="stack-table">
+          <caption>Decision criteria used to align QA evaluators, training leads, and frontline supervisors.</caption>
+          <thead>
+            <tr>
+              <th scope="col">Observed QA Signal</th>
+              <th scope="col">Root-Cause Check</th>
+              <th scope="col">Primary Owner Action</th>
+              <th scope="col">Follow-Up Verification</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td data-label="Observed QA Signal">Single specialist misses intake field</td>
+              <td data-label="Root-Cause Check">Job aid is current; peer cohort handles case cleanly</td>
+              <td data-label="Primary Owner Action">1:1 coaching with clear example and link to visual step guide</td>
+              <td data-label="Follow-Up Verification">Spot-check next 5 completed cases from that specialist</td>
+            </tr>
+            <tr>
+              <td data-label="Observed QA Signal">3+ specialists repeat same routing error across shifts</td>
+              <td data-label="Root-Cause Check">Payer rule changed or SOP wording is ambiguous</td>
+              <td data-label="Primary Owner Action">Update 1-page job aid, record 90-second Loom clip, announce in shift brief</td>
+              <td data-label="Follow-Up Verification">Audit cross-shift sample 72 hours after release</td>
+            </tr>
+            <tr>
+              <td data-label="Observed QA Signal">Portal or CRM rejects valid member/provider record</td>
+              <td data-label="Root-Cause Check">Confirmed reproducible with sanitized IDs and timestamps</td>
+              <td data-label="Primary Owner Action">File Jira defect with expected vs. actual state and interim workaround</td>
+              <td data-label="Follow-Up Verification">Validate fix in staging/production before retiring workaround</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span><a href="../index.html?focus=healthcare">&larr; Back to Portfolio Home</a></span>
+    <span><a href="./onboarding-vilt-module.html">Next Sample: L&amp;D ADDIE Module &rarr;</a></span>
+  </footer>
+
+  <script src="./samples.js"></script>
+</body>
+</html>

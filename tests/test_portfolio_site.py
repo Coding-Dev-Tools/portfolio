@@ -122,7 +122,14 @@ class TestPortfolioContentAndLinks(unittest.TestCase):
             ROOT / "favicon.svg",
             ROOT / "robots.txt",
             ROOT / "sitemap.xml",
+            ROOT / "assets" / "og-card.png",
+            ROOT / "assets" / "previews" / "engraphis-preview.png",
+            ROOT / "assets" / "previews" / "snippetmanagerpro-preview.png",
+            ROOT / "assets" / "previews" / "vpnsecurity-preview.png",
+            ROOT / "assets" / "resume" / "Joshua_Williams_Healthcare_Ops_Resume.pdf",
+            ROOT / "assets" / "resume" / "Joshua_Williams_Technical_Support_Ops_Resume.pdf",
             ROOT / "samples" / "samples.js",
+            ROOT / "samples" / "healthcare-escalation-qa.html",
             ROOT / "samples" / "onboarding-vilt-module.html",
             ROOT / "samples" / "escalation-decision-tree.html",
             ROOT / "samples" / "ai-verification-rubric.html",
@@ -206,6 +213,7 @@ class TestPortfolioContentAndLinks(unittest.TestCase):
             self.assertRegex(txt, r'<link\s+rel="canonical"\s+href="https://coding-dev-tools\.github\.io/portfolio/', str(html_path))
             self.assertIn("favicon.svg", txt, str(html_path))
             self.assertIn('property="og:title"', txt, str(html_path))
+            self.assertIn('property="og:image"', txt, str(html_path))
             self.assertIn('class="skip-link"', txt, str(html_path))
             self.assertIn('id="main-content"', txt, str(html_path))
 
@@ -220,7 +228,7 @@ class TestPortfolioContentAndLinks(unittest.TestCase):
                 nav_sets.append((html_path.name, parser.nav_labels))
 
         expected_nav = nav_sets[0][1]
-        self.assertEqual(len(expected_nav), 6, f"Expected 6 topbar nav items, got {expected_nav}")
+        self.assertEqual(len(expected_nav), 7, f"Expected 7 topbar nav items, got {expected_nav}")
         for fname, labels in nav_sets[1:]:
             self.assertEqual(labels, expected_nav, f"Topbar nav drift in {fname}: {labels}")
 
@@ -285,12 +293,18 @@ class TestPortfolioBrowserInteractions(unittest.TestCase):
                     else None,
                 )
 
-                # 1. Homepage filters, URL query updates, adaptive callout, and invalid focus fallback
-                page.goto(f"{base}/index.html?focus=lnd", wait_until="load")
-                self.assertEqual(page.locator("[data-categories]:not(.is-hidden)").count(), 5)
+                # 1. Homepage filters, URL query updates, adaptive callout, inline workbench, and invalid focus fallback
+                page.goto(f"{base}/index.html?focus=healthcare", wait_until="load")
+                self.assertEqual(page.locator("[data-categories]:not(.is-hidden)").count(), 4)
                 self.assertTrue(page.locator("#focus-callout").is_visible())
 
-                for filt, count, grid2 in (("ops", 4, True), ("cs", 4, True), ("data", 4, True), ("all", 6, False)):
+                for filt, count, grid2 in (
+                    ("lnd", 4, True),
+                    ("ops", 4, True),
+                    ("cs", 4, True),
+                    ("data", 3, False),
+                    ("all", 6, False),
+                ):
                     page.click(f'[data-filter="{filt}"]')
                     self.assertEqual(page.locator("[data-categories]:not(.is-hidden)").count(), count)
                     self.assertEqual("card-grid-2" in (page.locator("#samples-grid").get_attribute("class") or ""), grid2)
@@ -299,8 +313,25 @@ class TestPortfolioBrowserInteractions(unittest.TestCase):
                     else:
                         self.assertIn(f"focus={filt}", page.url)
 
+                # Inline 30-second proof workbench tabs & interactive buttons
+                page.click('[data-wb-hc="afterhours"]')
+                self.assertIn("Clinic Site #204", page.locator("#wb-hc-output").inner_text())
+                page.click("#wb-tab-ai")
+                self.assertTrue(page.locator("#wb-panel-ai").is_visible())
+                page.click("#wb-tab-tech")
+                page.click("#wb-run-check")
+                self.assertIn("BLOCKED", page.locator("#wb-tech-output").inner_text())
+
                 page.goto(f"{base}/index.html?focus=unknown_key", wait_until="load")
                 self.assertEqual(page.locator("[data-categories]:not(.is-hidden)").count(), 6)
+
+                # 1b. Dedicated Healthcare & Payer Operations QA sample
+                page.goto(f"{base}/samples/healthcare-escalation-qa.html", wait_until="load")
+                self.assertIn("Eligibility", page.locator("#hc-title").inner_text())
+                page.click("#tab-hc-afterhours")
+                self.assertIn("Clinic Site #204", page.locator("#hc-note").inner_text())
+                page.click("#tab-hc-auth")
+                self.assertIn("Prior-Authorization", page.locator("#hc-title").inner_text())
 
                 # 2. ADDIE vILT sample: ARIA keyboard tab navigation + 3-question quiz + reset
                 page.goto(f"{base}/samples/onboarding-vilt-module.html", wait_until="load")
@@ -338,9 +369,12 @@ class TestPortfolioBrowserInteractions(unittest.TestCase):
                 page.click("#tree-back")
                 self.assertIn("Step 3 of 4", page.locator("#tree-step").inner_text())
 
-                # 4. AI Verification rubric: neutral 0/6 default, scenario tabs, preset 6/6, clear
+                # 4. AI Verification rubric: neutral 0/6 default, scenario tabs, live draft checker, preset 6/6, clear
                 page.goto(f"{base}/samples/ai-verification-rubric.html", wait_until="load")
                 self.assertIn("0 / 6", page.locator("#rubric-score").inner_text())
+                self.assertIn("BLOCKED", page.locator("#qa-draft-result").inner_text())
+                page.click("#qa-draft-load-pass")
+                self.assertIn("PASS", page.locator("#qa-draft-result").inner_text())
                 page.click("#tab-case-data")
                 self.assertIn("480 ingested rows", page.locator("#case-data").inner_text())
                 page.click("#tab-case-inv")
@@ -361,9 +395,11 @@ class TestPortfolioBrowserInteractions(unittest.TestCase):
                 page.click("#tab-wh-sig")
                 self.assertIn("Stripe-Signature", page.locator("#wh-payload").inner_text())
 
-                # 6. HRIS simulator: default 3 rows, invalid CSV error handling, details expand, reset
+                # 6. HRIS simulator: default 3 rows, defect preset catches blocks, invalid CSV handling, details expand, reset
                 page.goto(f"{base}/demos/hris-identity/index.html", wait_until="load")
                 self.assertEqual(page.locator("#results-body tr").count(), 3)
+                page.click("#defect-button")
+                self.assertIn("Blocked", page.locator("#results-body").inner_text())
                 page.fill("#csv-input", "bad_header\n1")
                 page.click("#simulate-button")
                 self.assertIn("Input error", page.locator("#results-body").inner_text())

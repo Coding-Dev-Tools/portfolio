@@ -12,7 +12,12 @@
   <meta property="og:title" content="HRIS Identity Lifecycle Simulator | Joshua Williams Portfolio">
   <meta property="og:description" content="Offline identity-lifecycle validator processing synthetic joiner, mover, and leaver events for human review.">
   <meta property="og:url" content="https://coding-dev-tools.github.io/portfolio/demos/hris-identity/index.html">
-  <meta name="twitter:card" content="summary">
+  <meta property="og:image" content="https://coding-dev-tools.github.io/portfolio/assets/og-card.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Joshua Williams Healthcare Operations, Enablement and Technical Support Portfolio">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://coding-dev-tools.github.io/portfolio/assets/og-card.png">
   <link rel="stylesheet" href="../../styles.css">
 </head>
 <body>
@@ -26,6 +31,7 @@
       </a>
       <nav class="nav-links" aria-label="Sample navigation">
         <a href="../../index.html">Portfolio Home</a>
+        <a href="../../samples/healthcare-escalation-qa.html">Healthcare QA</a>
         <a href="../../samples/onboarding-vilt-module.html">L&amp;D ADDIE Module</a>
         <a href="../../samples/escalation-decision-tree.html">Decision Tree</a>
         <a href="../../samples/ai-verification-rubric.html">AI Eval Rubric</a>
@@ -39,13 +45,13 @@
     <a class="breadcrumb" href="../../index.html?focus=ops">&larr; Back to Operations &amp; QA Portfolio</a>
 
     <section class="hero" aria-labelledby="hris-hero-title">
-      <span class="eyebrow">Operations Validation Demo | Synthetic Client-Side Exercise</span>
+      <span class="eyebrow">Operations Validation Tool | Client-Side JS + Unit Tests</span>
       <h1 id="hris-hero-title">HRIS Identity Lifecycle Simulator</h1>
       <p class="hero-subtitle">
-        A self-contained Human Resources Information System (HRIS) validator checking synthetic joiner, mover, and leaver CSV events against schema rules, suggesting baseline groups for human review, and displaying read-only API reference shapes.
+        A self-contained Human Resources Information System (HRIS) validator checking joiner, mover, and leaver CSV events against schema rules, flagging invalid dates or unknown departments before provisioning, and generating human-review recommendations.
       </p>
       <div class="callout" role="note">
-        <strong>Offline learning exercise only:</strong> This browser demo processes fictional <code>.test</code> sample rows locally. It is not a production identity system, executes zero live Microsoft Graph or Entra requests, saves no data, and is presented solely as a testable validation exercise.
+        <strong>Synthetic browser dry-run:</strong> Processes local <code>@example.test</code> rows client-side with zero external calls or stored data. Load the defect batch below to see schema and access-rule blocks in action.
       </div>
     </section>
 
@@ -53,7 +59,7 @@
       <section class="panel mt-0" aria-labelledby="input-heading">
         <h2 id="input-heading">Synthetic HRIS Event CSV</h2>
         <p class="meta-note">Required columns: <code>employee_id</code>, <code>action</code>, <code>display_name</code>, <code>department</code>, <code>manager_email</code>, <code>effective_date</code>, <code>employment_status</code>.</p>
-        <label class="fw-600 mt-sm" style="display:block;" for="csv-input">Edit or paste synthetic rows</label>
+        <label class="field-label mt-sm" for="csv-input">Edit or paste synthetic rows</label>
         <textarea id="csv-input" class="hris-textarea mt-sm" spellcheck="false" aria-describedby="input-help">employee_id,action,display_name,department,manager_email,effective_date,employment_status
 EMP-1001,join,Avery Chen,Finance,mgr-finance@example.test,2026-11-02,active
 EMP-1002,move,Jordan Patel,People Ops,mgr-people@example.test,2026-10-01,active
@@ -61,7 +67,8 @@ EMP-1003,leave,Casey Rivera,Engineering,mgr-eng@example.test,2026-10-13,terminat
         <p id="input-help" class="meta-note mt-sm">Supported departments: Finance, People Ops, Engineering. Manager addresses must use the reserved <code>@example.test</code> domain.</p>
         <div class="hero-actions actions">
           <button id="simulate-button" class="btn" type="button">Run dry run</button>
-          <button id="reset-button" class="btn btn-secondary" type="button">Reset sample</button>
+          <button id="defect-button" class="btn btn-secondary" type="button">Load defect batch</button>
+          <button id="reset-button" class="btn btn-secondary" type="button">Reset valid sample</button>
         </div>
       </section>
 
@@ -146,6 +153,21 @@ EMP-1003,leave,Casey Rivera,Engineering,mgr-eng@example.test,2026-10-13,terminat
           jsonOutput.textContent = "{}";
         }
       });
+
+      const defectSample = [
+        "employee_id,action,display_name,department,manager_email,effective_date,employment_status",
+        "EMP-2001,join,Morgan Lee,Finance,mgr-finance@example.test,11/02/2026,active",
+        "EMP-2002,move,Taylor Brooks,ShadowIT,mgr-ops@example.test,2026-10-15,active",
+        "EMP-2003,leave,Devon Cruz,Engineering,devon@gmail.com,2026-10-20,active"
+      ].join("\n");
+
+      const defectBtn = document.getElementById("defect-button");
+      if (defectBtn) {
+        defectBtn.addEventListener("click", () => {
+          input.value = defectSample;
+          document.getElementById("simulate-button").click();
+        });
+      }
 
       document.getElementById("reset-button").addEventListener("click", () => {
         input.value = sample;
