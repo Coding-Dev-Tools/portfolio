@@ -63,10 +63,12 @@
     afterhours:
       "[SYNTHETIC CASE - AFTER-HOURS WARM HANDOFF] Verified active on-call roster for Clinic Site #204. Primary on-call clinician confirmed callback live at 21:14 ET; logged named receiving owner, timestamp, and written facility confirmation.",
   };
-  document.querySelectorAll("[data-wb-hc]").forEach((btn) => {
+  const wbHcButtons = Array.from(document.querySelectorAll("[data-wb-hc]"));
+  wbHcButtons.forEach((btn) => {
     btn.addEventListener("click", () => {
       const key = btn.getAttribute("data-wb-hc");
-      if (wbHcOut && WB_HC_NOTES[key]) wbHcOut.textContent = WB_HC_NOTES[key];
+      wbHcButtons.forEach((b) => b.setAttribute("aria-pressed", b === btn ? "true" : "false"));
+      if (wbHcOut && Object.hasOwn(WB_HC_NOTES, key)) wbHcOut.textContent = WB_HC_NOTES[key];
     });
   });
 
@@ -111,7 +113,7 @@
 
   function applyFilter(key, updateQuery = true) {
     const cleanKey = (key || "all").toLowerCase();
-    const normalized = FOCUS_MAP[cleanKey] || "all";
+    const normalized = Object.hasOwn(FOCUS_MAP, cleanKey) ? FOCUS_MAP[cleanKey] : "all";
     let visibleCount = 0;
 
     buttons.forEach((btn) => {
@@ -142,9 +144,9 @@
     }
 
     if (focusCallout) {
-      const note = FOCUS_NOTES[normalized];
+      const note = Object.hasOwn(FOCUS_NOTES, normalized) ? FOCUS_NOTES[normalized] : "";
       focusCallout.hidden = !note;
-      focusCallout.textContent = note || "";
+      focusCallout.textContent = note;
     }
 
     if (

@@ -561,12 +561,12 @@
       },
       {
         label: "Unsafe privacy / PHI workaround",
-        re: /\b(email\s+(patient|member)\s+(spreadsheet|csv|ssn|phi)|send\s+unencrypted|bypass\s+intake)\b/i,
+        re: /\b(email\s+(patient|member)\s+(spreadsheets?|csvs?|ssns?|phi)|send\s+unencrypted|bypass\s+intake)\b/i,
         fix: "Route strictly through approved encrypted queues with redacted references.",
       },
       {
         label: "Unverified percentage metric",
-        re: /\b(cuts?\s+ramp\s+time\s+by\s+\d+%|reduces?\s+errors?\s+by\s+\d+%|increases?\s+retention\s+by\s+\d+%)\b/i,
+        re: /\b(cuts?\s+ramp\s+time\s+by\s+\d+%|reduces?\s+errors?\s+by\s+\d+%|increases?\s+retention\s+by\s+\d+%)(?!\w)/i,
         fix: "Cite a real exported denominator and timeframe, or remove the unverified percentage.",
       },
       {

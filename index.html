@@ -88,7 +88,7 @@
         Three years full-time remote at Carenet Health supervising up to 80 specialists across 900+ clinical facilities and 200+ CenterWell locations plus six years of regulated Medicaid coordination, paired with hands-on web development, Python/REST API/Zapier automation, Stripe billing QA, and interactive SOP tooling.
       </p>
 
-      <div class="availability-bar" aria-label="Work authorization and W-2 availability">
+      <div class="availability-bar" role="group" aria-label="Work authorization and W-2 availability">
         <span class="avail-pill avail-pill-accent">Seeking Full-Time Remote W-2 Role</span>
         <span class="avail-pill">US Authorized (No Sponsorship)</span>
         <span class="avail-pill">Remote US (Eastern Time) | Immediate Start</span>
@@ -102,7 +102,7 @@
       </div>
       <p id="action-status" class="meta-note hero-note mt-sm" aria-live="polite"></p>
 
-      <div class="lens-bar mt-md" aria-label="Tailor portfolio view by hiring focus">
+      <div class="lens-bar mt-md">
         <span class="lens-label">Hiring for? Pick a lens:</span>
         <div class="filter-bar mb-0" role="group" aria-label="Filter work samples by role focus">
           <button class="filter-pill" type="button" data-filter="all" aria-pressed="true">All Proof (6)</button>
@@ -116,7 +116,7 @@
 
       <div id="focus-callout" class="callout callout-hero" hidden aria-live="polite"></div>
 
-      <div class="scope-grid" aria-label="Career scope overview">
+      <div class="scope-grid" role="group" aria-label="Career scope overview">
         <div class="scope-card">
           <div class="scope-value">Up to 80 Specialists</div>
           <div class="scope-label">900+ clinical facilities &amp; 200+ after-hours CenterWell sites supported at Carenet Health (2022 - 2025)</div>
@@ -146,7 +146,7 @@
         </div>
       </div>
 
-      <div class="panel workbench-panel mt-0" id="live-workbench" aria-labelledby="workbench-heading">
+      <section class="panel workbench-panel mt-0" id="live-workbench" aria-labelledby="workbench-heading">
         <div class="section-header mb-sm">
           <div>
             <span class="tag">30-Second Live Proof</span>
@@ -162,8 +162,8 @@
         <div id="wb-panel-hc" role="tabpanel" aria-labelledby="wb-tab-hc" tabindex="0">
           <p class="meta-note mt-0">Click a synthetic healthcare scenario to generate an audit-ready supervisor handoff note:</p>
           <div class="hero-actions mt-sm">
-            <button class="btn btn-secondary btn-sm" type="button" data-wb-hc="elig">Medicaid Eligibility Mismatch</button>
-            <button class="btn btn-secondary btn-sm" type="button" data-wb-hc="afterhours">After-Hours Clinical Warm Handoff</button>
+            <button class="btn btn-secondary btn-sm wb-toggle" type="button" data-wb-hc="elig" aria-pressed="true">Medicaid Eligibility Mismatch</button>
+            <button class="btn btn-secondary btn-sm wb-toggle" type="button" data-wb-hc="afterhours" aria-pressed="false">After-Hours Clinical Warm Handoff</button>
             <a class="btn btn-sm" href="./samples/healthcare-escalation-qa.html">Open Full Healthcare QA Playbook &rarr;</a>
           </div>
           <pre id="wb-hc-output" class="mt-sm" aria-live="polite">[SYNTHETIC CASE - ELIGIBILITY QA] Primary payer portal verified active effective 2026-11-01 (CRM cache showed stale 2026-10-31 term). Confirmed coverage window for clinic coordinator, logged verification timestamp in CRM, and flagged sync lag for Ops review.</pre>
@@ -195,7 +195,7 @@
           </div>
           <pre id="wb-tech-output" class="mt-sm" aria-live="polite">Click "Run Validation Check" to inspect caught ISO-8601 date and Stripe HMAC-SHA256 defects.</pre>
         </div>
-      </div>
+      </section>
 
       <p id="filter-status" class="meta-note mt-md" aria-live="polite">Showing all 6 work samples.</p>
 
@@ -534,7 +534,7 @@
     <span>
       <a href="mailto:joshuawilliamsky@yahoo.com">joshuawilliamsky@yahoo.com</a> |
       <a href="https://www.linkedin.com/in/josh-williams-094338120" target="_blank" rel="noopener">LinkedIn</a> |
-      <a href="https://github.com/Coding-Dev-Tools" target="_blank" rel="noopener">GitHub</a> |
+      <a href="https://github.com/Coding-Dev-Tools" target="_blank" rel="noopener">GitHub</a><span class="print-hide"> | </span>
       <button class="footer-link-btn" type="button" id="print-summary-btn">Print Summary</button>
     </span>
   </footer>

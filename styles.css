@@ -99,6 +99,10 @@ a:hover {
   outline-offset: 2px;
 }
 
+.hero-dark :focus-visible {
+  outline-color: #5eead4;
+}
+
 .topbar {
   position: sticky;
   top: 0;
@@ -533,6 +537,12 @@ a:hover {
 
 .workbench-panel {
   border-left: 4px solid var(--teal);
+}
+
+.wb-toggle[aria-pressed="true"] {
+  background: var(--teal-soft);
+  border-color: var(--teal);
+  color: var(--teal-hover);
 }
 
 .role-card-anchor {
@@ -1153,7 +1163,10 @@ pre {
   #tree-reset,
   #tree-back,
   #tree-copy,
+  #hc-copy-note,
+  #wh-copy-comms,
   #quiz-reset,
+  .print-hide,
   .footer-link-btn,
   .actions {
     display: none !important;
@@ -1167,14 +1180,21 @@ pre {
     color: #0f172a !important;
     border: 1px solid #cbd5e1 !important;
   }
-  .hero-dark h1,
-  .hero-dark .hero-subtitle,
-  .hero-dark .scope-value,
-  .hero-dark .scope-label,
-  .hero-dark .avail-pill,
-  .hero-dark .eyebrow {
+  .hero.hero-dark h1,
+  .hero.hero-dark .hero-subtitle,
+  .hero.hero-dark .scope-value,
+  .hero.hero-dark .scope-label,
+  .hero.hero-dark .hero-note {
+    color: #0f172a !important;
+    background: transparent !important;
+  }
+  .hero.hero-dark .scope-card,
+  .hero.hero-dark .avail-pill,
+  .hero.hero-dark .eyebrow,
+  .hero.hero-dark .callout-hero {
     color: #0f172a !important;
     background: #f8fafc !important;
+    border-color: #cbd5e1 !important;
   }
   .hero,
   .panel,

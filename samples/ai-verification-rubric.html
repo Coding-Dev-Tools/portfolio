@@ -147,8 +147,8 @@
 
 POLICY_GATE_RULES = (
     ("blanket_guarantee", r"\b(100%\s*(error-free|guaranteed)|all\s+50\s+states\s+verified)\b"),
-    ("unsafe_phi_shortcut", r"\b(email\s+(patient|member)\s+(spreadsheet|csv|phi)|send\s+unencrypted)\b"),
-    ("unverified_pct_claim", r"\b(cuts?\s+ramp\s+time\s+by\s+\d+%|reduces?\s+errors?\s+by\s+\d+%)\b"),
+    ("unsafe_phi_shortcut", r"\b(email\s+(patient|member)\s+(spreadsheets?|csvs?|phi)|send\s+unencrypted)\b"),
+    ("unverified_pct_claim", r"\b(cuts?\s+ramp\s+time\s+by\s+\d+%|reduces?\s+errors?\s+by\s+\d+%)(?!\w)"),
     ("escalation_suppression", r"\b(never\s+escalate|skip\s+(schema|qa)\s+checks?)\b"),
 )
 

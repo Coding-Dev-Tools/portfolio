@@ -38,6 +38,7 @@ FORBIDDEN_REGEXES: tuple[tuple[str, str], ...] = (
     ("cicd", r"CI/CD"),
     ("csat", r"\bCSAT\b"),
     ("sql", r"\bSQL\b"),
+    ("typescript", r"\bTypeScript\b"),
     ("ops_supervisor", r"Operations Supervisor"),
     ("care_coord", r"Care Coordinator"),
     ("bluegrass", r"Bluegrass"),
@@ -143,7 +144,7 @@ class TestPortfolioContentAndLinks(unittest.TestCase):
 
     def test_no_forbidden_claims_or_pii_in_public_site(self):
         scanned = []
-        for ext in ("*.html", "*.js", "*.md"):
+        for ext in ("*.html", "*.js", "*.md", "*.css", "*.xml"):
             scanned.extend(ROOT.rglob(ext))
         for path in scanned:
             if ".git" in path.parts:
@@ -157,6 +158,22 @@ class TestPortfolioContentAndLinks(unittest.TestCase):
                     f"{path.relative_to(ROOT)} matched forbidden pattern {name!r} ({pat!r})",
                 )
 
+        # Scan all public downloadable PDF resumes for PII, forbidden claims, and Carenet-no-Salesforce invariant.
+        from pypdf import PdfReader
+
+        for pdf_path in sorted((ROOT / "assets" / "resume").glob("*.pdf")):
+            reader = PdfReader(str(pdf_path))
+            self.assertEqual(len(reader.pages), 1, f"{pdf_path.name} must be 1 page")
+            pdf_text = "\n".join((p.extract_text() or "") for p in reader.pages)
+            for name, pat in FORBIDDEN_REGEXES:
+                self.assertIsNone(
+                    re.search(pat, pdf_text, flags=re.IGNORECASE),
+                    f"{pdf_path.relative_to(ROOT)} matched forbidden pattern {name!r} ({pat!r})",
+                )
+            self.assertIn("Carenet Health |", pdf_text, f"Missing Carenet Health role header in {pdf_path.name}")
+            c_slice = pdf_text[pdf_text.index("Carenet Health |") : pdf_text.index("Independent SaaS Partner")]
+            self.assertNotIn("Salesforce", c_slice, f"Carenet-specific Salesforce wording in {pdf_path.name}")
+
         # Ensure Carenet role card keeps verified wording ("up to 80", no Carenet-specific Salesforce claim).
         home = (ROOT / "index.html").read_text(encoding="utf-8")
         carenet_slice = home[home.index("Carenet Health |") : home.index("Independent SaaS Partner")]
@@ -165,7 +182,7 @@ class TestPortfolioContentAndLinks(unittest.TestCase):
 
     def test_reverse_chronology_on_homepage(self):
         text = (ROOT / "index.html").read_text(encoding="utf-8")
-        markers = ("Sep 2025", "Oct 2022", "Jun 2018", "Jan 2012")
+        markers = ("Sep 2025", "Oct 2022", "Jun 2018", "Jan 2016", "Jan 2012")
         positions = [text.find(m) for m in markers]
         self.assertTrue(all(p >= 0 for p in positions), f"Missing date markers: {positions}")
         self.assertEqual(positions, sorted(positions), f"Chronology out of order: {positions}")
@@ -235,7 +252,7 @@ class TestPortfolioContentAndLinks(unittest.TestCase):
     def test_hris_node_unit_tests_pass(self):
         node = shutil.which("node")
         if not node:
-            self.skipTest("node not installed")
+            self.fail("node is required to run HRIS unit tests")
         proc = subprocess.run(
             [node, "--test", str(ROOT / "demos" / "hris-identity" / "simulator.test.js")],
             capture_output=True,
@@ -265,13 +282,13 @@ class TestPortfolioBrowserInteractions(unittest.TestCase):
                 return playwright.chromium.launch(headless=True, **kwargs)
             except Exception:
                 continue
-        self.skipTest("no chromium, chrome, or edge binary available")
+        self.fail("no chromium, chrome, or edge binary available for Playwright tests")
 
     def test_pages_render_and_interact_without_errors_or_overflow(self):
         try:
             from playwright.sync_api import sync_playwright
-        except ImportError:
-            self.skipTest("playwright not installed in this interpreter")
+        except ImportError as exc:
+            self.fail(f"playwright is required for browser interaction tests: {exc}")
 
         base = f"http://127.0.0.1:{self.port}"
         with sync_playwright() as pw:
@@ -313,22 +330,27 @@ class TestPortfolioBrowserInteractions(unittest.TestCase):
                     else:
                         self.assertIn(f"focus={filt}", page.url)
 
-                # Inline 30-second proof workbench tabs & interactive buttons
+                # Inline 30-second proof workbench tabs, keyboard nav, & aria-pressed toggles
                 page.click('[data-wb-hc="afterhours"]')
+                self.assertEqual(page.locator('[data-wb-hc="afterhours"]').get_attribute("aria-pressed"), "true")
                 self.assertIn("Clinic Site #204", page.locator("#wb-hc-output").inner_text())
-                page.click("#wb-tab-ai")
+                page.locator("#wb-tab-hc").focus()
+                page.locator("#wb-tab-hc").press("ArrowRight")
                 self.assertTrue(page.locator("#wb-panel-ai").is_visible())
                 page.click("#wb-tab-tech")
                 page.click("#wb-run-check")
                 self.assertIn("BLOCKED", page.locator("#wb-tech-output").inner_text())
 
-                page.goto(f"{base}/index.html?focus=unknown_key", wait_until="load")
-                self.assertEqual(page.locator("[data-categories]:not(.is-hidden)").count(), 6)
+                # Invalid and Object.prototype keys safely fall back to All (6)
+                for bad_focus in ("unknown_key", "constructor", "__proto__"):
+                    page.goto(f"{base}/index.html?focus={bad_focus}", wait_until="load")
+                    self.assertEqual(page.locator("[data-categories]:not(.is-hidden)").count(), 6)
 
-                # 1b. Dedicated Healthcare & Payer Operations QA sample
+                # 1b. Dedicated Healthcare & Payer Operations QA sample (click + keyboard tab nav)
                 page.goto(f"{base}/samples/healthcare-escalation-qa.html", wait_until="load")
                 self.assertIn("Eligibility", page.locator("#hc-title").inner_text())
-                page.click("#tab-hc-afterhours")
+                page.locator("#tab-hc-elig").focus()
+                page.locator("#tab-hc-elig").press("ArrowRight")
                 self.assertIn("Clinic Site #204", page.locator("#hc-note").inner_text())
                 page.click("#tab-hc-auth")
                 self.assertIn("Prior-Authorization", page.locator("#hc-title").inner_text())
@@ -369,12 +391,14 @@ class TestPortfolioBrowserInteractions(unittest.TestCase):
                 page.click("#tree-back")
                 self.assertIn("Step 3 of 4", page.locator("#tree-step").inner_text())
 
-                # 4. AI Verification rubric: neutral 0/6 default, scenario tabs, live draft checker, preset 6/6, clear
+                # 4. AI Verification rubric: neutral 0/6 default, scenario tabs, live draft checker (all 4 rules), preset 6/6, clear
                 page.goto(f"{base}/samples/ai-verification-rubric.html", wait_until="load")
                 self.assertIn("0 / 6", page.locator("#rubric-score").inner_text())
-                self.assertIn("BLOCKED", page.locator("#qa-draft-result").inner_text())
+                self.assertIn("BLOCKED (4 defects caught)", page.locator("#qa-draft-result").inner_text())
                 page.click("#qa-draft-load-pass")
                 self.assertIn("PASS", page.locator("#qa-draft-result").inner_text())
+                page.click("#qa-draft-load-fail")
+                self.assertIn("BLOCKED (4 defects caught)", page.locator("#qa-draft-result").inner_text())
                 page.click("#tab-case-data")
                 self.assertIn("480 ingested rows", page.locator("#case-data").inner_text())
                 page.click("#tab-case-inv")
@@ -395,11 +419,14 @@ class TestPortfolioBrowserInteractions(unittest.TestCase):
                 page.click("#tab-wh-sig")
                 self.assertIn("Stripe-Signature", page.locator("#wh-payload").inner_text())
 
-                # 6. HRIS simulator: default 3 rows, defect preset catches blocks, invalid CSV handling, details expand, reset
+                # 6. HRIS simulator: default 3 rows, defect preset displays real blocked errors, invalid CSV handling, details expand, reset
                 page.goto(f"{base}/demos/hris-identity/index.html", wait_until="load")
                 self.assertEqual(page.locator("#results-body tr").count(), 3)
                 page.click("#defect-button")
-                self.assertIn("Blocked", page.locator("#results-body").inner_text())
+                hris_table_text = page.locator("#results-body").inner_text()
+                self.assertIn("Blocked", hris_table_text)
+                self.assertIn("YYYY-MM-DD", hris_table_text)
+                self.assertIn("Department is not in the approved mapping", hris_table_text)
                 page.fill("#csv-input", "bad_header\n1")
                 page.click("#simulate-button")
                 self.assertIn("Input error", page.locator("#results-body").inner_text())

@@ -129,7 +129,8 @@ EMP-1003,leave,Casey Rivera,Engineering,mgr-eng@example.test,2026-10-13,terminat
           addCell(row, event.action || "-", "", "Event");
           const reviewStatus = event.decision === "blocked" ? "Blocked" : "Review recommended";
           addCell(row, reviewStatus, event.decision === "blocked" ? "blocked" : "pending", "Review status");
-          addCell(row, event.review_summary || event.errors.join("; "), "", "Recommendation");
+          const recommendation = event.decision === "blocked" ? event.errors.join("; ") : event.review_summary;
+          addCell(row, recommendation, "", "Recommendation");
           resultsBody.appendChild(row);
         }
         const s = result.summary;
@@ -143,9 +144,10 @@ EMP-1003,leave,Casey Rivera,Engineering,mgr-eng@example.test,2026-10-13,terminat
         } catch (error) {
           resultsBody.replaceChildren();
           const row = document.createElement("tr");
-          addCell(row, "Input error", "blocked");
+          addCell(row, "Input error", "blocked", "Review status");
           const cell = document.createElement("td");
           cell.colSpan = 3;
+          cell.setAttribute("data-label", "Details");
           cell.textContent = error.message;
           row.appendChild(cell);
           resultsBody.appendChild(row);
