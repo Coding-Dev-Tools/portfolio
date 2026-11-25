@@ -8,5 +8,5 @@ Self-contained static portfolio showcasing verified operations, learning design 
 
 ```powershell
 node --test demos/hris-identity/simulator.test.js
-uv run --with playwright python -m unittest tests/test_portfolio_site.py -v
+uv run --with playwright --with pypdf python -m unittest tests/test_portfolio_site.py -v
 ```

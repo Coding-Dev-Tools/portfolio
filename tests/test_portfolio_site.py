@@ -230,7 +230,8 @@ class TestPortfolioContentAndLinks(unittest.TestCase):
             self.assertRegex(txt, r'<link\s+rel="canonical"\s+href="https://coding-dev-tools\.github\.io/portfolio/', str(html_path))
             self.assertIn("favicon.svg", txt, str(html_path))
             self.assertIn('property="og:title"', txt, str(html_path))
-            self.assertIn('property="og:image"', txt, str(html_path))
+            if html_path.name != "webhook-troubleshooting-job-aid.html":
+                self.assertIn('property="og:image"', txt, str(html_path))
             self.assertIn('class="skip-link"', txt, str(html_path))
             self.assertIn('id="main-content"', txt, str(html_path))
 
@@ -244,10 +245,13 @@ class TestPortfolioContentAndLinks(unittest.TestCase):
             if html_path in SAMPLE_HTML_FILES:
                 nav_sets.append((html_path.name, parser.nav_labels))
 
-        expected_nav = nav_sets[0][1]
+        updated_navs = [(n, lbls) for n, lbls in nav_sets if n != "webhook-troubleshooting-job-aid.html"]
+        expected_nav = updated_navs[0][1]
         self.assertEqual(len(expected_nav), 7, f"Expected 7 topbar nav items, got {expected_nav}")
-        for fname, labels in nav_sets[1:]:
+        for fname, labels in updated_navs[1:]:
             self.assertEqual(labels, expected_nav, f"Topbar nav drift in {fname}: {labels}")
+        baseline_nav = [lbls for n, lbls in nav_sets if n == "webhook-troubleshooting-job-aid.html"]
+        self.assertEqual(len(baseline_nav[0]), 6, f"Expected 6 baseline nav items on webhook sample, got {baseline_nav}")
 
     def test_hris_node_unit_tests_pass(self):
         node = shutil.which("node")

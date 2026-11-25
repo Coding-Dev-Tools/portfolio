@@ -12,12 +12,7 @@
   <meta property="og:title" content="SaaS Onboarding &amp; Webhook Troubleshooting Guide | Joshua Williams Portfolio">
   <meta property="og:description" content="Self-service integration triage playbook for Customer Success and Technical Support enablement.">
   <meta property="og:url" content="https://coding-dev-tools.github.io/portfolio/samples/webhook-troubleshooting-job-aid.html">
-  <meta property="og:image" content="https://coding-dev-tools.github.io/portfolio/assets/og-card.png">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="Joshua Williams Healthcare Operations, Enablement and Technical Support Portfolio">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:image" content="https://coding-dev-tools.github.io/portfolio/assets/og-card.png">
+  <meta name="twitter:card" content="summary">
   <link rel="stylesheet" href="../styles.css">
 </head>
 <body>
@@ -31,7 +26,6 @@
       </a>
       <nav class="nav-links" aria-label="Sample navigation">
         <a href="../index.html">Portfolio Home</a>
-        <a href="./healthcare-escalation-qa.html">Healthcare QA</a>
         <a href="./onboarding-vilt-module.html">L&amp;D ADDIE Module</a>
         <a href="./escalation-decision-tree.html">Decision Tree</a>
         <a href="./ai-verification-rubric.html">AI Eval Rubric</a>
@@ -62,7 +56,7 @@
         <button id="tab-wh-sig" class="tab-btn" type="button" role="tab" data-webhook-case="sig_mismatch" aria-controls="wh-panel" aria-selected="false" tabindex="-1">Webhook Signature Mismatch</button>
       </div>
 
-      <div id="wh-panel" role="tabpanel" aria-labelledby="tab-wh-auth" tabindex="0">
+      <div id="wh-panel" role="tabpanel" aria-labelledby="tab-wh-auth" aria-live="polite" tabindex="0">
         <h3 id="wh-title" class="text-teal mt-sm">Case</h3>
         <p class="fw-600 mt-sm">Captured Request / Error Evidence (Sanitized Sample)</p>
         <pre id="wh-payload"></pre>
@@ -71,10 +65,6 @@
         <ol id="wh-diagnosis" class="resolution-steps"></ol>
 
         <div id="wh-comms" class="callout callout-teal mt-md"></div>
-        <div class="hero-actions mt-sm">
-          <button id="wh-copy-comms" class="btn btn-secondary" type="button">Copy Customer Update Template</button>
-        </div>
-        <p id="wh-copy-status" class="meta-note mt-sm" aria-live="polite"></p>
       </div>
     </section>
   </main>

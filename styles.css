@@ -1164,7 +1164,6 @@ pre {
   #tree-back,
   #tree-copy,
   #hc-copy-note,
-  #wh-copy-comms,
   #quiz-reset,
   .print-hide,
   .footer-link-btn,
@@ -1195,6 +1194,11 @@ pre {
     color: #0f172a !important;
     background: #f8fafc !important;
     border-color: #cbd5e1 !important;
+  }
+  pre {
+    background: #f8fafc !important;
+    color: #0f172a !important;
+    border: 1px solid #cbd5e1 !important;
   }
   .hero,
   .panel,

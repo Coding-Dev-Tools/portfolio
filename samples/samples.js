@@ -61,8 +61,8 @@
   };
 
   function updateHealthcarePanel(caseKey) {
+    if (!Object.hasOwn(HC_CASES, caseKey)) return;
     const data = HC_CASES[caseKey];
-    if (!data) return;
     const titleEl = document.getElementById("hc-title");
     const mistakeEl = document.getElementById("hc-mistake");
     const standardEl = document.getElementById("hc-standard");
@@ -142,13 +142,12 @@
   };
 
   function updateWebhookPanel(caseKey) {
+    if (!Object.hasOwn(WEBHOOK_CASES, caseKey)) return;
     const data = WEBHOOK_CASES[caseKey];
-    if (!data) return;
     const titleEl = document.getElementById("wh-title");
     const payloadEl = document.getElementById("wh-payload");
     const stepsEl = document.getElementById("wh-diagnosis");
     const commsEl = document.getElementById("wh-comms");
-    const copyStatus = document.getElementById("wh-copy-status");
     if (titleEl) titleEl.textContent = data.title;
     if (payloadEl) payloadEl.textContent = data.payload;
     if (stepsEl) {
@@ -160,21 +159,6 @@
       });
     }
     if (commsEl) commsEl.textContent = data.comms;
-    if (copyStatus) copyStatus.textContent = "";
-  }
-
-  const whCopyBtn = document.getElementById("wh-copy-comms");
-  if (whCopyBtn) {
-    whCopyBtn.addEventListener("click", async () => {
-      const commsEl = document.getElementById("wh-comms");
-      const statusEl = document.getElementById("wh-copy-status");
-      try {
-        await navigator.clipboard.writeText(commsEl?.textContent || "");
-        if (statusEl) statusEl.textContent = "Customer update template copied to clipboard.";
-      } catch (_err) {
-        if (statusEl) statusEl.textContent = "Copy ready: highlight the template above.";
-      }
-    });
   }
 
   document.querySelectorAll("[data-tablist]").forEach((list) => {
@@ -269,7 +253,7 @@
         block.removeAttribute("data-answered-correct");
         block.querySelectorAll("button.quiz-option").forEach((btn) => {
           btn.classList.remove("is-correct", "is-wrong");
-          btn.removeAttribute("aria-pressed");
+          btn.setAttribute("aria-pressed", "false");
         });
         const feedback = block.querySelector("[data-quiz-feedback]");
         if (feedback) {
