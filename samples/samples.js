@@ -1,5 +1,104 @@
 (() => {
-  // 1. Unified WAI-ARIA Tablist controller (supports standard panels & dynamic webhook views)
+  // 0. Synthetic Healthcare & Payer Operations QA scenarios
+  const HC_CASES = {
+    eligibility_date: {
+      title: "Medicaid / Managed-Care Eligibility Effective-Date Mismatch",
+      mistake:
+        "Specialist tells the clinic the member is inactive based solely on a stale CRM banner without checking the payer portal coverage effective window or secondary plan ID, causing an avoidable appointment cancellation.",
+      standard:
+        "Audit the primary payer portal effective and term dates against the intake timestamp, confirm active plan code and PCP assignment, document verified dates in CRM/Jira, and provide the clinic a clear status confirmation.",
+      steps: [
+        "Verify member coverage effective date, plan code, and eligibility status directly in the primary health-plan portal rather than relying on cached intake summaries.",
+        "Cross-check service date against retro-eligibility or plan-transition windows (e.g., first-of-month Medicaid plan changes).",
+        "If portal and CRM disagree after verification, update the CRM case note with timestamped portal state and route any sync discrepancy to Operations/IT.",
+        "Deliver plain-language status confirmation to the clinic coordinator with next steps and ticket reference ID.",
+      ],
+      note:
+        "[SYNTHETIC CASE - ELIGIBILITY QA]\n" +
+        "Track: Payer Eligibility Effective-Date Audit\n" +
+        "Primary Source Checked: Health-plan eligibility portal verified active effective 2026-11-01 (CRM cache showed prior plan term 2026-10-31).\n" +
+        "Action Taken: Confirmed active plan code for scheduled clinic visit; logged portal verification timestamp in CRM; flagged sync lag for Ops review.\n" +
+        "Stakeholder Loop: Clinic coordinator notified in writing with confirmed coverage window and case reference.",
+    },
+    afterhours_handoff: {
+      title: "After-Hours Urgent Clinical Routing & Warm-Handoff Verification",
+      mistake:
+        "Specialist drops an urgent after-hours physician callback message into a shared queue without verifying the live on-call rotation or confirming receiving-clinician acknowledgment.",
+      standard:
+        "Validate the active after-hours on-call roster for the specific facility, confirm complete callback and symptom intake fields, secure live named acknowledgment (or trigger secondary backup within escalation window), and log timestamps.",
+      steps: [
+        "Confirm facility location code and active after-hours on-call clinician roster before initiating dispatch.",
+        "Verify required intake fields (callback number, facility/clinic ID, urgency classification, concise clinical summary) with zero guesswork.",
+        "Initiate warm handoff to primary on-call owner; if unacknowledged inside the protocol window, immediately escalate to backup on-duty lead.",
+        "Record receiving owner name, acknowledgment timestamp, and closed communication loop in CRM and Epic/portal log.",
+      ],
+      note:
+        "[SYNTHETIC CASE - AFTER-HOURS WARM HANDOFF]\n" +
+        "Track: Urgent Clinical Routing & Ownership Confirmation\n" +
+        "Facility Roster Verified: Confirmed active after-hours on-call coverage for Clinic Site #204.\n" +
+        "Handoff Status: Primary on-call clinician acknowledged callback live at 21:14 ET (backup path stood down).\n" +
+        "Audit Trail: Logged named receiving owner, acceptance timestamp, and written confirmation to requesting facility.",
+    },
+    auth_audit: {
+      title: "Prior-Authorization & Service Documentation Completeness QA",
+      mistake:
+        "Case is routed to payer review missing ordering-provider NPI, date-range alignment, or required clinical progress summary, triggering an automatic payer pend and multi-day delay.",
+      standard:
+        "Run a 4-point pre-submission completeness check (active coverage dates, ordering provider credentials, matching service code/units, attached signed notes) before releasing to payer intake.",
+      steps: [
+        "Confirm authorization request dates fall strictly inside active eligibility and service-plan windows.",
+        "Verify ordering provider details, service code, unit count, and supporting progress notes are complete and legible.",
+        "Catch and resolve missing fields with the clinic coordinator prior to submission instead of letting the payer pend the request.",
+        "If 3+ incomplete submissions share the same missing field across a week, ship a 1-page visual intake checklist to the team.",
+      ],
+      note:
+        "[SYNTHETIC CASE - AUTHORIZATION COMPLETENESS QA]\n" +
+        "Track: Pre-Submission Documentation Audit\n" +
+        "Pre-Check Result: Caught missing service-date alignment and unsigned addendum prior to payer submission.\n" +
+        "Action Taken: Coordinated corrected documentation with clinic office same day; verified all 4 completeness gates passed before submission.\n" +
+        "Prevention: Logged recurring missing-field pattern for Friday shift QA coaching.",
+    },
+  };
+
+  function updateHealthcarePanel(caseKey) {
+    if (!Object.hasOwn(HC_CASES, caseKey)) return;
+    const data = HC_CASES[caseKey];
+    const titleEl = document.getElementById("hc-title");
+    const mistakeEl = document.getElementById("hc-mistake");
+    const standardEl = document.getElementById("hc-standard");
+    const stepsEl = document.getElementById("hc-steps");
+    const noteEl = document.getElementById("hc-note");
+    const copyStatus = document.getElementById("hc-copy-status");
+    if (titleEl) titleEl.textContent = data.title;
+    if (mistakeEl) mistakeEl.textContent = data.mistake;
+    if (standardEl) standardEl.textContent = data.standard;
+    if (noteEl) noteEl.textContent = data.note;
+    if (copyStatus) copyStatus.textContent = "";
+    if (stepsEl) {
+      stepsEl.replaceChildren();
+      data.steps.forEach((step) => {
+        const li = document.createElement("li");
+        li.textContent = step;
+        stepsEl.appendChild(li);
+      });
+    }
+  }
+
+  const hcCopyBtn = document.getElementById("hc-copy-note");
+  if (hcCopyBtn) {
+    hcCopyBtn.addEventListener("click", async () => {
+      const noteEl = document.getElementById("hc-note");
+      const statusEl = document.getElementById("hc-copy-status");
+      try {
+        await navigator.clipboard.writeText(noteEl?.textContent || "");
+        if (statusEl) statusEl.textContent = "Healthcare escalation handoff note copied to clipboard.";
+      } catch (_err) {
+        if (statusEl) statusEl.textContent = "Copy ready: highlight the handoff note above.";
+      }
+    });
+  }
+
+  // 1. Unified WAI-ARIA Tablist controller (standard panels, dynamic webhook views, dynamic healthcare views)
   const WEBHOOK_CASES = {
     auth_401: {
       title: "HTTP 401 / 403 - Webhook Auth Token or Permission Scope Mismatch",
@@ -21,11 +120,11 @@
         'Response: 400 {"error":"invalid_date_iso8601","field":"effective_date"}',
       steps: [
         "Inspect required keys and field types in the API schema guide against the captured request body.",
-        "Normalize timestamps and calendar dates to ISO-8601 (YYYY-MM-DD) prior to serialization.",
+        "Normalize timestamps and calendar dates to ISO-8601 (YYYY-MM-DD) in Zapier or Python middleware prior to serialization.",
         "Replay one single validated test record before re-enabling scheduled batch syncs.",
       ],
       comms:
-        "Customer Update Template: The sync rejected because effective_date arrived as MM/DD/YYYY instead of ISO-8601 (YYYY-MM-DD). Updating the field formatter in your integration resolves the 400 validation error.",
+        "Customer Update Template: The sync rejected because effective_date arrived as MM/DD/YYYY instead of ISO-8601 (YYYY-MM-DD). Updating the date formatter in your workflow step resolves the 400 validation error.",
     },
     sig_mismatch: {
       title: "Webhook Signature Verification Failed (Parsed vs. Raw Request Body)",
@@ -35,7 +134,7 @@
       steps: [
         "Confirm the webhook route passes raw, unparsed request bytes into constructEvent() / HMAC verification before any JSON body parser runs.",
         "Confirm the endpoint webhook signing secret (whsec_...) matches the destination environment and clock skew stays within tolerance.",
-        "Trigger a fresh signed test event from the dashboard rather than re-posting hand-edited JSON.",
+        "Trigger a fresh signed test event from the Stripe dashboard rather than re-posting hand-edited JSON.",
       ],
       comms:
         "Customer Update Template: Webhook requests reached your endpoint intact, but body parsing altered whitespace before cryptographic signature verification. Passing raw bytes into the signature check restores 200 OK delivery.",
@@ -43,8 +142,8 @@
   };
 
   function updateWebhookPanel(caseKey) {
+    if (!Object.hasOwn(WEBHOOK_CASES, caseKey)) return;
     const data = WEBHOOK_CASES[caseKey];
-    if (!data) return;
     const titleEl = document.getElementById("wh-title");
     const payloadEl = document.getElementById("wh-payload");
     const stepsEl = document.getElementById("wh-diagnosis");
@@ -66,6 +165,8 @@
     const tabs = Array.from(list.querySelectorAll('[role="tab"]'));
     if (!tabs.length) return;
     const isDynamicWebhook = tabs.some((t) => t.hasAttribute("data-webhook-case"));
+    const isDynamicHc = tabs.some((t) => t.hasAttribute("data-hc-case"));
+    const isDynamic = isDynamicWebhook || isDynamicHc;
 
     function selectTab(targetTab, focusTab = false) {
       tabs.forEach((tab) => {
@@ -75,17 +176,19 @@
 
         const panelId = tab.getAttribute("aria-controls");
         const panel = panelId ? document.getElementById(panelId) : null;
-        if (panel && !isDynamicWebhook) {
+        if (panel && !isDynamic) {
           panel.hidden = !active;
         }
       });
 
       if (isDynamicWebhook) {
         const panel = document.getElementById(targetTab.getAttribute("aria-controls") || "");
-        if (panel && targetTab.id) {
-          panel.setAttribute("aria-labelledby", targetTab.id);
-        }
+        if (panel && targetTab.id) panel.setAttribute("aria-labelledby", targetTab.id);
         updateWebhookPanel(targetTab.getAttribute("data-webhook-case"));
+      } else if (isDynamicHc) {
+        const panel = document.getElementById(targetTab.getAttribute("aria-controls") || "");
+        if (panel && targetTab.id) panel.setAttribute("aria-labelledby", targetTab.id);
+        updateHealthcarePanel(targetTab.getAttribute("data-hc-case"));
       }
 
       if (focusTab) targetTab.focus();
@@ -150,7 +253,7 @@
         block.removeAttribute("data-answered-correct");
         block.querySelectorAll("button.quiz-option").forEach((btn) => {
           btn.classList.remove("is-correct", "is-wrong");
-          btn.removeAttribute("aria-pressed");
+          btn.setAttribute("aria-pressed", "false");
         });
         const feedback = block.querySelector("[data-quiz-feedback]");
         if (feedback) {
@@ -163,7 +266,7 @@
   }
   refreshQuizScore();
 
-  // 3. Decision tree walker (4 complete steps per track, Back button, Copy Note, focus preservation)
+  // 3. Decision tree walker (4 complete steps per track, 2+ real branches at every step, Back button, Copy Note)
   const treeHost = document.getElementById("decision-tree-app");
   if (treeHost) {
     const NODES = {
@@ -250,6 +353,11 @@
             next: "sop_close",
             summaryAdd: "Handoff Standard: Timestamped reproduction package with expected vs. actual diff attached.",
           },
+          {
+            label: "Replay one sanitized test event first to confirm reproducible HTTP error before filing",
+            next: "sop_close",
+            summaryAdd: "Handoff Standard: Confirmed reproducible error via single sanitized replay prior to Engineering escalation.",
+          },
         ],
       },
       warm_handoff_confirm: {
@@ -261,6 +369,11 @@
             label: "Log owner name + timestamp in CRM/Jira and notify waiting partner in writing",
             next: "sop_close",
             summaryAdd: "Closure Standard: Recorded named owner, acceptance timestamp, and written stakeholder update.",
+          },
+          {
+            label: "Set a 30-minute supervisor follow-up reminder until final partner confirmation lands",
+            next: "sop_close",
+            summaryAdd: "Closure Standard: Logged named owner, notified partner, and scheduled 30-minute verification check.",
           },
         ],
       },
@@ -371,7 +484,7 @@
     render(false);
   }
 
-  // 4. AI Verification Rubric (neutral initial 0/6 state + Load Passing Preset + Clear All)
+  // 4. AI Verification Rubric + Live Draft Gate Tester
   const rubricBoxes = Array.from(document.querySelectorAll("[data-rubric-check]"));
   const rubricScoreEl = document.getElementById("rubric-score");
   const rubricNoteEl = document.getElementById("rubric-note");
@@ -414,5 +527,74 @@
       });
     }
     updateRubric();
+  }
+
+  // Live Draft QA Gate Tester on ai-verification-rubric.html
+  const draftInput = document.getElementById("qa-draft-input");
+  const draftRunBtn = document.getElementById("qa-draft-run");
+  const draftFailBtn = document.getElementById("qa-draft-load-fail");
+  const draftPassBtn = document.getElementById("qa-draft-load-pass");
+  const draftResult = document.getElementById("qa-draft-result");
+
+  if (draftInput && draftRunBtn && draftResult) {
+    const GATE_RULES = [
+      {
+        label: "Unsupported blanket claim",
+        re: /\b(100%\s*(error-free|guaranteed|accurate|compliant)|always\s+guaranteed|all\s+50\s+states\s+verified)\b/i,
+        fix: "Replace blanket claims with observed scope and cited source records.",
+      },
+      {
+        label: "Unsafe privacy / PHI workaround",
+        re: /\b(email\s+(patient|member)\s+(spreadsheets?|csvs?|ssns?|phi)|send\s+unencrypted|bypass\s+intake)\b/i,
+        fix: "Route strictly through approved encrypted queues with redacted references.",
+      },
+      {
+        label: "Unverified percentage metric",
+        re: /\b(cuts?\s+ramp\s+time\s+by\s+\d+%|reduces?\s+errors?\s+by\s+\d+%|increases?\s+retention\s+by\s+\d+%)(?!\w)/i,
+        fix: "Cite a real exported denominator and timeframe, or remove the unverified percentage.",
+      },
+      {
+        label: "Escalation suppression risk",
+        re: /\b(never\s+escalate|never\s+bother\s+(clinical|supervisors?|leads?)|skip\s+(schema|qa)\s+checks?)\b/i,
+        fix: "Specify explicit escalation criteria and receiving owners when standard steps fail.",
+      },
+    ];
+
+    function runDraftGate() {
+      const text = (draftInput.value || "").trim();
+      if (!text) {
+        draftResult.className = "callout callout-neutral mt-sm";
+        draftResult.textContent = "Paste or load a sample draft above to run the pre-release QA gate.";
+        return;
+      }
+      const hits = GATE_RULES.filter((r) => r.re.test(text));
+      if (!hits.length) {
+        draftResult.className = "callout callout-teal mt-sm";
+        draftResult.textContent =
+          "PASS (0 policy or unverified-claim defects detected): Ready for final human SME sign-off.";
+      } else {
+        draftResult.className = "callout callout-amber mt-sm";
+        draftResult.textContent =
+          `BLOCKED (${hits.length} defect${hits.length === 1 ? "" : "s"} caught): ` +
+          hits.map((h) => `[${h.label}] ${h.fix}`).join(" | ");
+      }
+    }
+
+    draftRunBtn.addEventListener("click", runDraftGate);
+    if (draftFailBtn) {
+      draftFailBtn.addEventListener("click", () => {
+        draftInput.value =
+          "Our updated SOP cuts ramp time by 42% and guarantees 100% error-free intake. If the portal lags, email patient spreadsheets directly and skip QA checks.";
+        runDraftGate();
+      });
+    }
+    if (draftPassBtn) {
+      draftPassBtn.addEventListener("click", () => {
+        draftInput.value =
+          "Follow the approved 1-page visual intake guide. If portal sync fails, capture a redacted timestamped screenshot, route through the encrypted queue, and notify your on-duty lead.";
+        runDraftGate();
+      });
+    }
+    runDraftGate();
   }
 })();

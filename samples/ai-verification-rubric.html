@@ -12,7 +12,12 @@
   <meta property="og:title" content="AI Content Validation &amp; Evidence-Gating Rubric | Joshua Williams Portfolio">
   <meta property="og:description" content="Side-by-side draft diffs, interactive 6-gate release checklist, and Python verification pattern.">
   <meta property="og:url" content="https://coding-dev-tools.github.io/portfolio/samples/ai-verification-rubric.html">
-  <meta name="twitter:card" content="summary">
+  <meta property="og:image" content="https://coding-dev-tools.github.io/portfolio/assets/og-card.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Joshua Williams Healthcare Operations, Enablement and Technical Support Portfolio">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://coding-dev-tools.github.io/portfolio/assets/og-card.png">
   <link rel="stylesheet" href="../styles.css">
 </head>
 <body>
@@ -26,6 +31,7 @@
       </a>
       <nav class="nav-links" aria-label="Sample navigation">
         <a href="../index.html">Portfolio Home</a>
+        <a href="./healthcare-escalation-qa.html">Healthcare QA</a>
         <a href="./onboarding-vilt-module.html">L&amp;D ADDIE Module</a>
         <a href="./escalation-decision-tree.html">Decision Tree</a>
         <a href="./ai-verification-rubric.html" aria-current="page">AI Eval Rubric</a>
@@ -135,20 +141,33 @@
     </section>
 
     <section class="panel" aria-labelledby="python-gate-heading">
-      <h2 id="python-gate-heading">2. Automated Python Evidence-Check Pattern</h2>
-      <p class="section-lead">In addition to manual review, automated Python verification checks block unverified claims or broken schema dates from sneaking into published packets.</p>
+      <h2 id="python-gate-heading">2. Automated Python QA Gate Pattern &amp; Live Draft Checker</h2>
+      <p class="section-lead">In addition to human SME review, automated Python verification checks block unverified percentages, blanket promises, and unsafe privacy workarounds before publication. Test any sample text below:</p>
       <pre>import re
 
-FORBIDDEN_UNVERIFIED = (
-    ("unverified_sla", r"(?&lt;!\d)99\.2"),
-    ("unsupported_claim", r"100%\s+error-free"),
-    ("blanket_promise", r"all\s+50\s+states\s+verified"),
+POLICY_GATE_RULES = (
+    ("blanket_guarantee", r"\b(100%\s*(error-free|guaranteed)|all\s+50\s+states\s+verified)\b"),
+    ("unsafe_phi_shortcut", r"\b(email\s+(patient|member)\s+(spreadsheets?|csvs?|phi)|send\s+unencrypted)\b"),
+    ("unverified_pct_claim", r"\b(cuts?\s+ramp\s+time\s+by\s+\d+%|reduces?\s+errors?\s+by\s+\d+%)(?!\w)"),
+    ("escalation_suppression", r"\b(never\s+escalate|skip\s+(schema|qa)\s+checks?)\b"),
 )
 
-def assert_verified_text(draft_text: str) -> None:
-    for label, pattern in FORBIDDEN_UNVERIFIED:
-        if re.search(pattern, draft_text, flags=re.IGNORECASE):
-            raise ValueError(f"Blocked unverified claim ({label}) prior to release.")</pre>
+def audit_draft_before_release(draft_text: str) -> list[str]:
+    return [
+        label for label, pattern in POLICY_GATE_RULES
+        if re.search(pattern, draft_text, flags=re.IGNORECASE)
+    ]</pre>
+
+      <div class="mt-md">
+        <label class="field-label" for="qa-draft-input">Try the live pre-release QA gate in your browser</label>
+        <textarea id="qa-draft-input" class="hris-textarea qa-textarea mt-sm" spellcheck="false">Our updated SOP cuts ramp time by 42% and guarantees 100% error-free intake. If the portal lags, email patient spreadsheets directly and skip QA checks.</textarea>
+        <div class="hero-actions mt-sm">
+          <button id="qa-draft-run" class="btn" type="button">Run QA Gate Check</button>
+          <button id="qa-draft-load-fail" class="btn btn-secondary" type="button">Load Failing Draft</button>
+          <button id="qa-draft-load-pass" class="btn btn-secondary" type="button">Load Verified Draft</button>
+        </div>
+        <div id="qa-draft-result" class="callout callout-neutral mt-sm" aria-live="polite"></div>
+      </div>
     </section>
 
     <section class="panel" aria-labelledby="rubric-heading">
